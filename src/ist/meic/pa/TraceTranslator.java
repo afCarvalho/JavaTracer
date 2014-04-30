@@ -7,9 +7,9 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
 
-public class MemoizeTranslator implements Translator {
+public class TraceTranslator implements Translator {
 
-	public MemoizeTranslator() {
+	public TraceTranslator() {
 		// Nothing to do here
 	}
 
@@ -32,8 +32,9 @@ public class MemoizeTranslator implements Translator {
 			CannotCompileException, ClassNotFoundException {
 		for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
 			// TODO
-			// percorre os metodos da classe e cria estrutura que depois mete na
+			// percorre os metodos da classe e cria TraceInfo que depois mete na
 			// hash table
+			// fazer metodo e depois a string e' a chamada ao metodo
 		}
 	}
 }

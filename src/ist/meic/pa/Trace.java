@@ -1,8 +1,11 @@
 package ist.meic.pa;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Trace {
 
-	// static hash table
+	private static HashMap<Object, ArrayList<TraceInfo>> traceInfoTable = new HashMap<Object, ArrayList<TraceInfo>>();
 
 	public Trace() {
 		// TODO Auto-generated constructor stub
