@@ -17,4 +17,15 @@ public class Trace {
 		// o que encontra (de forma ordenada por: a) linhas b) entradas c)
 		// saidas (confirmar)) e vai imprimindo
 	}
+
+	public static void addInfo(Object object, TraceInfo info) {
+		if (traceInfoTable.containsKey(object)) {
+			traceInfoTable.get(object).add(info);
+
+		} else {
+			ArrayList<TraceInfo> list = new ArrayList<TraceInfo>();
+			list.add(info);
+			traceInfoTable.put(object, list);
+		}
+	}
 }

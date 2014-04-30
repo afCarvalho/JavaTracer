@@ -5,9 +5,10 @@ public class TraceInfo {
 	private boolean isReturn;
 	private String behaviour;
 	private String file;
-	private int line;
+	private String line;
 
-	public TraceInfo(boolean isReturn, String behaviour, String file, int line) {
+	public TraceInfo(boolean isReturn, String behaviour, String file,
+			String line) {
 		this.isReturn = isReturn;
 		this.behaviour = behaviour;
 		this.file = file;
@@ -26,7 +27,7 @@ public class TraceInfo {
 		return file;
 	}
 
-	public int getLine() {
+	public String getLine() {
 		return line;
 	}
 }

@@ -7,6 +7,8 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
 
 public class TraceTranslator implements Translator {
 
@@ -32,16 +34,40 @@ public class TraceTranslator implements Translator {
 	void traceMethods(CtClass ctClass) throws NotFoundException,
 			CannotCompileException, ClassNotFoundException {
 		for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-			ctMethod.insertBefore("TraceTranslator.traceMethod("
-					+ ctMethod.getName() + ")");
+			/*
+			 * ctMethod.insertBefore("{ist.meic.pa.TraceTranslator.traceMethod("
+			 * + ctMethod.getLongName() + ");}");
+			 */
+			ctMethod.instrument(new ExprEditor() {
+				public void edit(MethodCall m) throws CannotCompileException {
+
+					m.replace("{ist.meic.pa.TraceTranslator.traceMethod(\"m.getMethod().getLongName():\",\"m.getFileName():\",\"m.getLineNumber():\"); $_ = $proceed($$); }");
+
+					/*
+					 * System.err.println("--------");
+					 * System.err.println("m.getMethodName(): " +
+					 * m.getMethodName() + "; m.getFileName(): " +
+					 * m.getFileName() + "; line: " + m.getLineNumber()); try {
+					 * System.err.println("longName: " +
+					 * m.getMethod().getLongName()); } catch (NotFoundException
+					 * e) { // TODO Auto-generated catch block
+					 * e.printStackTrace(); }
+					 */
+				}
+			});
 		}
 	}
 
-	static void traceMethod(CtMethod method) {
+	public static void traceMethod(String methodLongName, String fileName,
+			String lineNumber) {
 
-		// TODO
-		// percorre os metodos da classe e cria TraceInfo que depois mete na
-		// hash table
-		// fazer metodo e depois a string e' a chamada ao metodo
+		// FIXME mudar o isReturn para true/false conforme o
+		// caso
+		TraceInfo info = new TraceInfo(true, methodLongName, fileName,
+				lineNumber);
+		Trace.addInfo("ObjectoTeste", info);
+		// System.err.println(" methodLongName: " + methodLongName +
+		// " fileName: "
+		// + fileName + " lineNumber:" + lineNumber);
 	}
 }
