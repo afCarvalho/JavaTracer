@@ -25,49 +25,29 @@ public class TraceTranslator implements Translator {
 			throws NotFoundException, CannotCompileException {
 		CtClass ctClass = pool.get(className);
 		try {
-			traceMethods(ctClass);
+			traceMethods(ctClass, className);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	void traceMethods(CtClass ctClass) throws NotFoundException,
-			CannotCompileException, ClassNotFoundException {
-		for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-			/*
-			 * ctMethod.insertBefore("{ist.meic.pa.TraceTranslator.traceMethod("
-			 * + ctMethod.getLongName() + ");}");
-			 */
+	void traceMethods(final CtClass ctClass, final String className)
+			throws NotFoundException, CannotCompileException,
+			ClassNotFoundException {
+		for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
 			ctMethod.instrument(new ExprEditor() {
 				public void edit(MethodCall m) throws CannotCompileException {
-
-					m.replace("{ist.meic.pa.TraceTranslator.traceMethod(\"m.getMethod().getLongName():\",\"m.getFileName():\",\"m.getLineNumber():\"); $_ = $proceed($$); }");
-
-					/*
-					 * System.err.println("--------");
-					 * System.err.println("m.getMethodName(): " +
-					 * m.getMethodName() + "; m.getFileName(): " +
-					 * m.getFileName() + "; line: " + m.getLineNumber()); try {
-					 * System.err.println("longName: " +
-					 * m.getMethod().getLongName()); } catch (NotFoundException
-					 * e) { // TODO Auto-generated catch block
-					 * e.printStackTrace(); }
-					 */
+					if (ctClass.getPackageName() == null) {
+						TraceInfo info = new TraceInfo(true, m.getMethodName(),
+								m.getFileName(), m.getLineNumber() + "");
+						Trace.addInfo("ObjectoTeste", info);
+						m.replace("{ist.meic.pa.TraceTranslator.traceMethod($class); $_ = $proceed($$); }");
+					}
 				}
 			});
 		}
 	}
 
-	public static void traceMethod(String methodLongName, String fileName,
-			String lineNumber) {
-
-		// FIXME mudar o isReturn para true/false conforme o
-		// caso
-		TraceInfo info = new TraceInfo(true, methodLongName, fileName,
-				lineNumber);
-		Trace.addInfo("ObjectoTeste", info);
-		// System.err.println(" methodLongName: " + methodLongName +
-		// " fileName: "
-		// + fileName + " lineNumber:" + lineNumber);
+	public static void traceMethod(Class c) {
 	}
 }
