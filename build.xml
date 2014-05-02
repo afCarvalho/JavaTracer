@@ -23,7 +23,7 @@
 	</target>
 
 	<target name="compile" depends="clean,init">
-		<javac destdir="${classes.dir}" debug="true" includeantruntime="false">
+		<javac destdir="${classes.dir}" debug="true" includeantruntime="false" target="1.6" source="1.6">
 			<classpath refid="project.classpath" />
 			<src>
 				<pathelement path="${src.dir}" />
