@@ -14,6 +14,8 @@ public class TraceVM {
 		if (args.length < 1) {
 			System.err.println("Usage: TraceVM <className>");
 		} else {
+			/* initializes the table with the info */
+			Trace.init();
 			Translator translator = new TraceTranslator();
 			ClassPool pool = ClassPool.getDefault();
 			Loader classLoader = new Loader();

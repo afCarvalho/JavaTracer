@@ -38,16 +38,25 @@ public class TraceTranslator implements Translator {
 			ctMethod.instrument(new ExprEditor() {
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (ctClass.getPackageName() == null) {
-						TraceInfo info = new TraceInfo(true, m.getMethodName(),
-								m.getFileName(), m.getLineNumber() + "");
-						Trace.addInfo("ObjectoTeste", info);
-						m.replace("{ist.meic.pa.TraceTranslator.traceMethod($class); $_ = $proceed($$); }");
+
+						TraceInfo info = null;
+						try {
+							info = new TraceInfo(m.getMethod().getLongName(), m
+									.getFileName(), m.getLineNumber());
+						} catch (NotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						Trace.createInfo(info);
+
+						m.replace("{ist.meic.pa.TraceTranslator.traceMethod($args, $type); $_ = $proceed($$); }");
 					}
 				}
 			});
 		}
 	}
 
-	public static void traceMethod(Class c) {
+	public static void traceMethod(Object[] args, Object result) {
+		Trace.addInfo(args, result);
 	}
 }
