@@ -2,12 +2,9 @@ package ist.meic.pa;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.Loader;
-import javassist.Translator;
 
 /**
  * The Class Trace.
@@ -15,17 +12,17 @@ import javassist.Translator;
 public class Trace {
 
 	/** The trace info table. */
-	private static ArrayList<TraceInfo> traceInfoTable;
+	private static ArrayList<TraceInfo> traceInfoTable = new ArrayList<TraceInfo>();
+	private static final Trace INSTANCE = new Trace();
 
 	/**
 	 * Instantiates a new trace.
 	 */
-	public Trace() {
-		// Nothing to do here
+	private Trace() {
 	}
 
-	public static void init() {
-		traceInfoTable = new ArrayList<TraceInfo>();
+	public static Trace getTrace() {
+		return INSTANCE;
 	}
 
 	/**
@@ -34,7 +31,7 @@ public class Trace {
 	 * @param info
 	 *            the info
 	 */
-	public static void createInfo(TraceInfo info) {
+	public void createInfo(TraceInfo info) {
 		traceInfoTable.add(info);
 	}
 
@@ -46,10 +43,9 @@ public class Trace {
 	 * @param result
 	 *            the result of the method call
 	 */
-	public static void addInfo(Object[] args, Object result) {
-		if (traceInfoTable != null && traceInfoTable.size() > 0) {
-			TraceInfo info = traceInfoTable.get(traceInfoTable.size());
-
+	public void addInfo(Object[] args, Object result) {
+		if (traceInfoTable.size() > 0) {
+			TraceInfo info = traceInfoTable.get(traceInfoTable.size() - 1);
 			info.setArgs(args);
 			info.setResult(result);
 		}
@@ -61,7 +57,7 @@ public class Trace {
 	 * @param object
 	 *            the object
 	 */
-	static public void print(Object object) {
+	public static void print(Object object) {
 		System.err.println("-----print-----");
 		if (traceInfoTable != null) {
 			System.err.println("object: " + object);
@@ -70,8 +66,11 @@ public class Trace {
 				System.err.println("behaviour: " + info.getBehaviour());
 				System.err.println("file: " + info.getFile());
 				System.err.println("line: " + info.getLine());
-				for (int i = 0; i < info.getArgs().length; i++) {
-					System.err.println("arg" + i + ": " + info.getArgs()[i]);
+				if (info.getArgs() != null) {
+					for (int i = 0; i < info.getArgs().length; i++) {
+						System.err
+								.println("arg" + i + ": " + info.getArgs()[i]);
+					}
 				}
 				System.err.println("result: " + info.getResult());
 			}
