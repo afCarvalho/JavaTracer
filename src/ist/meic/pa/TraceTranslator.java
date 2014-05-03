@@ -8,8 +8,10 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
+import javassist.expr.ConstructorCall;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
 
 public class TraceTranslator implements Translator {
 
@@ -37,21 +39,56 @@ public class TraceTranslator implements Translator {
 			ClassNotFoundException {
 		for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
 			ctMethod.instrument(new ExprEditor() {
+
+				@Override
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (ctClass.getPackageName() == null) {
-						TraceInfo info = null;
+
 						try {
-							info = new TraceInfo(m.getMethod().getLongName(), m
-									.getFileName(), m.getLineNumber());
+							System.err.println(Trace.getTrace().getTableSize()
+									+ " "
+									+ m.getMethodName()
+									+ " "
+									+ m.getMethod().getReturnType()
+											.equals(CtClass.voidType));
+						} catch (NotFoundException e) {
+						}
+
+						try {
+							TraceInfo info = new TraceInfo(m.getMethod()
+									.getLongName(), m.getFileName(), m
+									.getLineNumber());
+
+							if (m.getMethod().getReturnType()
+									.equals(CtClass.voidType)) {
+								m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
+										+ Trace.getTrace().getTableSize()
+										+ ",$args,$type); $_ = $proceed($$);}");
+							} else {
+								m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+										+ Trace.getTrace().getTableSize()
+										+ ",$args,($w) $_);}");
+							}
+
+							Trace.getTrace().createInfo(info);
 						} catch (NotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						System.err.println(Trace.getTrace().getTableSize()
-								+ " " + m.getMethodName());
-						m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
+					}
+				}
+
+				@Override
+				public void edit(NewExpr expr) throws CannotCompileException {
+
+					if (ctClass.getPackageName() == null) {
+						TraceInfo info = new TraceInfo(expr.getClassName(),
+								expr.getFileName(), expr.getLineNumber());
+
+						expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
 								+ Trace.getTrace().getTableSize()
-								+ ",$args, $type); $_ = $proceed($$); }");
+								+ ",$args,($w) $_);}");
+						
 						Trace.getTrace().createInfo(info);
 					}
 				}

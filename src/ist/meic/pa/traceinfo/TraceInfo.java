@@ -107,36 +107,15 @@ public class TraceInfo {
 		String info = getBehaviour() + " on file " + getFile() + ":"
 				+ getLine();
 
-		if (result == void.class) {
-			info = " -> " + info;
-
-			for (Object obj : args) {
-				if (obj == object) {
-					System.err.println(info);
-				}
+		for (Object obj : args) {
+			if (obj == object) {
+				System.err.println(" -> " + info);
 			}
-
-			if (object == result) {
-				System.err.println(info);
-			}
-
 		}
 
-		if (result != void.class) {
-			info = "  <- " + info;
-			for (Object obj : args) {
-				if (obj == object) {
-					System.err.println(info);
-				}
-			}
-
-			System.out.println(object + " vs " + result);
-			if (object == result) {
-				System.err.println(info);
-			}
-
+		// System.out.println(object + " vs " + result);
+		if (object == result) {
+			System.err.println("  <- " + info);
 		}
-
 	}
-
 }
