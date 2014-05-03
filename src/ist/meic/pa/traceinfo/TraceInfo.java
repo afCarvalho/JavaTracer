@@ -1,4 +1,4 @@
-package ist.meic.pa;
+package ist.meic.pa.traceinfo;
 
 /**
  * The Class TraceInfo.
@@ -102,4 +102,41 @@ public class TraceInfo {
 	public void setResult(Object result) {
 		this.result = result;
 	}
+
+	public void printInfo(Object object) {
+		String info = getBehaviour() + " on file " + getFile() + ":"
+				+ getLine();
+
+		if (result == void.class) {
+			info = " -> " + info;
+
+			for (Object obj : args) {
+				if (obj == object) {
+					System.err.println(info);
+				}
+			}
+
+			if (object == result) {
+				System.err.println(info);
+			}
+
+		}
+
+		if (result != void.class) {
+			info = "  <- " + info;
+			for (Object obj : args) {
+				if (obj == object) {
+					System.err.println(info);
+				}
+			}
+
+			System.out.println(object + " vs " + result);
+			if (object == result) {
+				System.err.println(info);
+			}
+
+		}
+
+	}
+
 }

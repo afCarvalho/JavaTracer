@@ -1,5 +1,6 @@
 package ist.meic.pa;
 
+import ist.meic.pa.traceinfo.TraceInfo;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -46,15 +47,25 @@ public class TraceTranslator implements Translator {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						System.err.println(Trace.getTrace().getTableSize()
+								+ " " + m.getMethodName());
+						m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
+								+ Trace.getTrace().getTableSize()
+								+ ",$args, $type); $_ = $proceed($$); }");
 						Trace.getTrace().createInfo(info);
-						m.replace("{ist.meic.pa.TraceTranslator.traceMethod($args, $type); $_ = $proceed($$); }");
 					}
 				}
 			});
 		}
 	}
 
-	public static void traceMethod(Object[] args, Object result) {
-		Trace.getTrace().addInfo(args, result);
+	public static void traceMethod(int pos, Object[] args, Object result) {
+		System.err.println("POS " + pos + " RESULT " + result);
+		for (Object object : args) {
+			System.err.print(" ARG " + object);
+		}
+		System.err.println(" ");
+		System.err.println("----------- ");
+		Trace.getTrace().addInfo(pos, args, result);
 	}
 }

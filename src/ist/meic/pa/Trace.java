@@ -1,5 +1,7 @@
 package ist.meic.pa;
 
+import ist.meic.pa.traceinfo.TraceInfo;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -35,6 +37,10 @@ public class Trace {
 		traceInfoTable.add(info);
 	}
 
+	public int getTableSize() {
+		return traceInfoTable.size();
+	}
+
 	/**
 	 * Adds new information to the last info added to the list.
 	 * 
@@ -43,9 +49,9 @@ public class Trace {
 	 * @param result
 	 *            the result of the method call
 	 */
-	public void addInfo(Object[] args, Object result) {
+	public void addInfo(int pos, Object[] args, Object result) {
 		if (traceInfoTable.size() > 0) {
-			TraceInfo info = traceInfoTable.get(traceInfoTable.size() - 1);
+			TraceInfo info = traceInfoTable.get(pos);
 			info.setArgs(args);
 			info.setResult(result);
 		}
@@ -57,22 +63,11 @@ public class Trace {
 	 * @param object
 	 *            the object
 	 */
-	public static void print(Object object) {
-		System.err.println("-----print-----");
-		if (traceInfoTable != null) {
-			System.err.println("object: " + object);
-			System.err.println("size: " + traceInfoTable.size());
-			for (TraceInfo info : traceInfoTable) {
-				System.err.println("behaviour: " + info.getBehaviour());
-				System.err.println("file: " + info.getFile());
-				System.err.println("line: " + info.getLine());
-				if (info.getArgs() != null) {
-					for (int i = 0; i < info.getArgs().length; i++) {
-						System.err
-								.println("arg" + i + ": " + info.getArgs()[i]);
-					}
-				}
-				System.err.println("result: " + info.getResult());
+	static public void print(Object object) {
+		System.err.println("Tracing for " + object);
+		for (TraceInfo info : traceInfoTable) {
+			if (info.getArgs() != null) {
+				info.printInfo(object);
 			}
 		}
 	}
