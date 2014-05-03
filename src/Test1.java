@@ -1,6 +1,6 @@
 import ist.meic.pa.Trace;
 
-class Test {
+class Test01 {
 
 	public Object foo() {
 		return new String("Foo");
@@ -24,7 +24,7 @@ class Test {
 public class Test1 {
 
 	public static void main(String args[]) {
-		(new Test()).test();
+		(new Test01()).test();
 	}
 
 }

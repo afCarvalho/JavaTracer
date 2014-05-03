@@ -1,15 +1,15 @@
 Tracing for MyObj
   <- java.lang.String(java.lang.String) on Test2.java:14
-  -> Test.identity(java.lang.Object) on Test2.java:16
-  <- Test.identity(java.lang.Object) on Test2.java:16
+  -> Test02.identity(java.lang.Object) on Test2.java:16
+  <- Test02.identity(java.lang.Object) on Test2.java:16
   -> java.util.Map.put(java.lang.Object,java.lang.Object) on Test2.java:17
   <- java.util.Map.get(java.lang.Object) on Test2.java:18
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test2.java:20
 MyObj
 Tracing for MyObj
   <- java.lang.String(java.lang.String) on Test2.java:14
-  -> Test.identity(java.lang.Object) on Test2.java:16
-  <- Test.identity(java.lang.Object) on Test2.java:16
+  -> Test02.identity(java.lang.Object) on Test2.java:16
+  <- Test02.identity(java.lang.Object) on Test2.java:16
   -> java.util.Map.put(java.lang.Object,java.lang.Object) on Test2.java:17
   <- java.util.Map.get(java.lang.Object) on Test2.java:18
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test2.java:20

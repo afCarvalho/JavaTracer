@@ -2,7 +2,7 @@ import ist.meic.pa.Trace;
 
 import java.util.*;
 
-class Test {
+class Test02 {
 
     Map m = new HashMap();
 
@@ -30,6 +30,6 @@ class Test {
 
 public class Test2 {
     public static void main(String args[]) {
-        (new Test()).test();
+        (new Test02()).test();
     }
 }
