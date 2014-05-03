@@ -64,11 +64,15 @@ public class Trace {
 	 *            the object
 	 */
 	static public void print(Object object) {
-		System.err.println("Tracing for " + object);
-		for (TraceInfo info : traceInfoTable) {
-			if (info.getArgs() != null) {
-				info.printInfo(object);
+		if (traceInfoTable.size() > 0) {
+			System.err.println("Tracing for " + object);
+			for (TraceInfo info : traceInfoTable) {
+				if (info.getArgs() != null) {
+					info.printInfo(object);
+				}
 			}
+		} else {
+			System.err.println("Tracing for object is nonexistent!");
 		}
 	}
 

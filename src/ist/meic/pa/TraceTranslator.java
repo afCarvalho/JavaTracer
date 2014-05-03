@@ -5,10 +5,8 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
-import javassist.expr.ConstructorCall;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import javassist.expr.NewExpr;
@@ -44,15 +42,8 @@ public class TraceTranslator implements Translator {
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (ctClass.getPackageName() == null) {
 
-						try {
-							System.err.println(Trace.getTrace().getTableSize()
-									+ " "
-									+ m.getMethodName()
-									+ " "
-									+ m.getMethod().getReturnType()
-											.equals(CtClass.voidType));
-						} catch (NotFoundException e) {
-						}
+						/*System.err.println(Trace.getTrace().getTableSize()
+								+ " " + m.getMethodName());*/
 
 						try {
 							TraceInfo info = new TraceInfo(m.getMethod()
@@ -82,14 +73,27 @@ public class TraceTranslator implements Translator {
 				public void edit(NewExpr expr) throws CannotCompileException {
 
 					if (ctClass.getPackageName() == null) {
-						TraceInfo info = new TraceInfo(expr.getClassName(),
-								expr.getFileName(), expr.getLineNumber());
 
-						expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-								+ Trace.getTrace().getTableSize()
-								+ ",$args,($w) $_);}");
-						
-						Trace.getTrace().createInfo(info);
+						try {
+							/*System.err
+									.println(Trace.getTrace().getTableSize()
+											+ " "
+											+ expr.getConstructor()
+													.getLongName());*/
+							TraceInfo info = new TraceInfo(expr
+									.getConstructor().getLongName(), expr
+									.getFileName(), expr.getLineNumber());
+
+							expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+									+ Trace.getTrace().getTableSize()
+									+ ",$args,($w) $_);}");
+
+							Trace.getTrace().createInfo(info);
+						} catch (NotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 					}
 				}
 			});
@@ -97,12 +101,12 @@ public class TraceTranslator implements Translator {
 	}
 
 	public static void traceMethod(int pos, Object[] args, Object result) {
-		System.err.println("POS " + pos + " RESULT " + result);
+		/*System.err.println("POS " + pos + " RESULT " + result);
 		for (Object object : args) {
 			System.err.print(" ARG " + object);
 		}
 		System.err.println(" ");
-		System.err.println("----------- ");
+		System.err.println("----------- ");*/
 		Trace.getTrace().addInfo(pos, args, result);
 	}
 }

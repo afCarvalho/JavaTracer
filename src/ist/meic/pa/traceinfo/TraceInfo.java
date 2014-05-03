@@ -104,12 +104,12 @@ public class TraceInfo {
 	}
 
 	public void printInfo(Object object) {
-		String info = getBehaviour() + " on file " + getFile() + ":"
+		String info = getBehaviour() + " on " + getFile() + ":"
 				+ getLine();
 
 		for (Object obj : args) {
 			if (obj == object) {
-				System.err.println(" -> " + info);
+				System.err.println("  -> " + info);
 			}
 		}
 
