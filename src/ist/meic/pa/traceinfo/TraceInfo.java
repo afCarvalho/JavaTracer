@@ -16,12 +16,6 @@ public class TraceInfo {
 	/** Line where the method is called. */
 	private int line;
 
-	/** The arguments of the method call. */
-	private Object[] args;
-
-	/** The result of the method call. */
-	private Object result;
-
 	/**
 	 * Instantiates a new trace info.
 	 * 
@@ -66,56 +60,12 @@ public class TraceInfo {
 	}
 
 	/**
-	 * Gets the arguments of the method call.
+	 * Gets the info.
 	 * 
-	 * @return the args
+	 * @param object
+	 * @return a string representing the info
 	 */
-	public Object[] getArgs() {
-		return args;
-	}
-
-	/**
-	 * Sets the arguments of the method call.
-	 * 
-	 * @param args
-	 *            the new args
-	 */
-	public void setArgs(Object[] args) {
-		this.args = args;
-	}
-
-	/**
-	 * Gets the result of the method call.
-	 * 
-	 * @return the result
-	 */
-	public Object getResult() {
-		return result;
-	}
-
-	/**
-	 * Sets the result of the method call.
-	 * 
-	 * @param result
-	 *            the new result
-	 */
-	public void setResult(Object result) {
-		this.result = result;
-	}
-
-	public void printInfo(Object object) {
-		String info = getBehaviour() + " on " + getFile() + ":"
-				+ getLine();
-
-		for (Object obj : args) {
-			if (obj == object) {
-				System.err.println("  -> " + info);
-			}
-		}
-
-		// System.out.println(object + " vs " + result);
-		if (object == result) {
-			System.err.println("  <- " + info);
-		}
+	public String getInfo(Object object) {
+		return getBehaviour() + " on " + getFile() + ":" + getLine();
 	}
 }

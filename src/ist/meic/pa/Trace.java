@@ -33,28 +33,8 @@ public class Trace {
 	 * @param info
 	 *            the info
 	 */
-	public void createInfo(TraceInfo info) {
-		traceInfoTable.add(info);
-	}
-
-	public int getTableSize() {
-		return traceInfoTable.size();
-	}
-
-	/**
-	 * Adds new information to the last info added to the list.
-	 * 
-	 * @param args
-	 *            the arguments of the method call
-	 * @param result
-	 *            the result of the method call
-	 */
-	public void addInfo(int pos, Object[] args, Object result) {
-		if (traceInfoTable.size() > 0) {
-			TraceInfo info = traceInfoTable.get(pos);
-			info.setArgs(args);
-			info.setResult(result);
-		}
+	public void addInfo(Object[] args, Object result, TraceInfo info) {
+		/* percorre os args e o result e adiciona 'a hash */
 	}
 
 	/**
@@ -65,12 +45,12 @@ public class Trace {
 	 */
 	static public void print(Object object) {
 		if (traceInfoTable.size() > 0) {
-			System.err.println("Tracing for " + object);
-			for (TraceInfo info : traceInfoTable) {
-				if (info.getArgs() != null) {
-					info.printInfo(object);
-				}
-			}
+			// se o obj for chave
+			/*
+			 * System.err.println("Tracing for " + object); for (TraceInfo info
+			 * : traceInfoTable) { if (info.getArgs() != null) {
+			 * info.printInfo(object); } }
+			 */
 		} else {
 			System.err.println("Tracing for object is nonexistent!");
 		}

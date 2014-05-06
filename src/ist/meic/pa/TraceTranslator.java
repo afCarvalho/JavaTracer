@@ -42,26 +42,31 @@ public class TraceTranslator implements Translator {
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (ctClass.getPackageName() == null) {
 
-						/*System.err.println(Trace.getTrace().getTableSize()
-								+ " " + m.getMethodName());*/
-
 						try {
-							TraceInfo info = new TraceInfo(m.getMethod()
-									.getLongName(), m.getFileName(), m
-									.getLineNumber());
+							String methodName = "\""
+									+ m.getMethod().getLongName() + "\"";
+							String fileName = "\"" + m.getFileName() + "\"";
 
 							if (m.getMethod().getReturnType()
 									.equals(CtClass.voidType)) {
 								m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
-										+ Trace.getTrace().getTableSize()
-										+ ",$args,$type); $_ = $proceed($$);}");
+										+ "$args,$type,"
+										+ methodName
+										+ ","
+										+ fileName
+										+ ","
+										+ m.getLineNumber()
+										+ "); $_ = $proceed($$);}");
 							} else {
 								m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-										+ Trace.getTrace().getTableSize()
-										+ ",$args,($w) $_);}");
+										+ "$args,($w) $_,"
+										+ methodName
+										+ ","
+										+ fileName
+										+ ","
+										+ m.getLineNumber()
+										+ ");}");
 							}
-
-							Trace.getTrace().createInfo(info);
 						} catch (NotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -75,38 +80,35 @@ public class TraceTranslator implements Translator {
 					if (ctClass.getPackageName() == null) {
 
 						try {
-							/*System.err
-									.println(Trace.getTrace().getTableSize()
-											+ " "
-											+ expr.getConstructor()
-													.getLongName());*/
-							TraceInfo info = new TraceInfo(expr
-									.getConstructor().getLongName(), expr
-									.getFileName(), expr.getLineNumber());
+
+							String methodName = "\""
+									+ expr.getConstructor().getLongName()
+									+ "\"";
+							String fileName = "\"" + expr.getFileName() + "\"";
 
 							expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-									+ Trace.getTrace().getTableSize()
-									+ ",$args,($w) $_);}");
-
-							Trace.getTrace().createInfo(info);
+									+ "$args,($w) $_,"
+									+ methodName
+									+ ","
+									+ fileName
+									+ ","
+									+ expr.getLineNumber()
+									+ ");}");
 						} catch (NotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
 					}
 				}
 			});
 		}
 	}
 
-	public static void traceMethod(int pos, Object[] args, Object result) {
-		/*System.err.println("POS " + pos + " RESULT " + result);
-		for (Object object : args) {
-			System.err.print(" ARG " + object);
-		}
-		System.err.println(" ");
-		System.err.println("----------- ");*/
-		Trace.getTrace().addInfo(pos, args, result);
+	public static void traceMethod(Object[] args, Object result,
+			String methodName, String fileName, int line) {
+
+		TraceInfo info = new TraceInfo(methodName, fileName, line);
+
+		Trace.getTrace().addInfo(args, result, info);
 	}
 }

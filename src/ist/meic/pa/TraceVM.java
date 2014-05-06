@@ -8,7 +8,7 @@ import javassist.bytecode.stackmap.Tracer;
 public class TraceVM {
 
 	public TraceVM() {
-		// TODO Auto-generated constructor stub
+		// Nothing to do here
 	}
 
 	public static void main(String[] args) throws Throwable {
