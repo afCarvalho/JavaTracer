@@ -1,4 +1,4 @@
-package ist.meic.pa.traceinfo;
+package ist.meic.pa;
 
 /**
  * The Class TraceInfo.
@@ -18,11 +18,9 @@ public class TraceInfo {
 
 	/** The number of times a line must be printed. */
 	private int counter;
-	
-	private boolean isArgument;
-	
-	private boolean isReturn;
-	
+
+	private int traceHash;
+
 	/**
 	 * Instantiates a new trace info.
 	 * 
@@ -38,8 +36,7 @@ public class TraceInfo {
 		this.file = file;
 		this.line = line;
 		this.counter = 0;
-		this.isArgument = false;
-		this.isReturn = false;
+		traceHash = this.hashCode();
 	}
 
 	/**
@@ -81,7 +78,7 @@ public class TraceInfo {
 
 	/**
 	 * Gets the counter.
-	 *
+	 * 
 	 * @return the counter
 	 */
 	public final int getCounter() {
@@ -96,41 +93,13 @@ public class TraceInfo {
 	public int incrementCounter() {
 		return counter++;
 	}
-	
-	/**
-	 * @return the isArgument
-	 */
-	public final boolean isArgument() {
-		return isArgument;
-	}
 
-	/**
-	 * @param isArgument the isArgument to set
-	 */
-	public final void setArgument(boolean isArgument) {
-		this.isArgument = isArgument;
-	}
-
-	/**
-	 * @return the isReturn
-	 */
-	public final boolean isReturn() {
-		return isReturn;
-	}
-
-	/**
-	 * @param isReturn the isReturn to set
-	 */
-	public final void setReturn(boolean isReturn) {
-		this.isReturn = isReturn;
-	}
-
-	public void print() {
+	public void print(boolean isArgument, boolean isResult) {
 		if (isArgument) {
 			System.err.println("  -> " + getInfo());
-		} 
-		
-		if (isReturn) {
+		}
+
+		if (isResult) {
 			System.err.println("  <- " + getInfo());
 		}
 	}
@@ -149,5 +118,9 @@ public class TraceInfo {
 		result = prime * result + ((file == null) ? 0 : file.hashCode());
 		result = prime * result + line;
 		return result;
+	}
+
+	public int getTraceHash() {
+		return traceHash;
 	}
 }

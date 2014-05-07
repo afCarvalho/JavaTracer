@@ -19,7 +19,7 @@ public class TraceVM {
 			Loader classLoader = new Loader();
 			classLoader.addTranslator(pool, translator);
 			classLoader.delegateLoadingOf("ist.meic.pa.Trace");
-			classLoader.delegateLoadingOf("ist.meic.pa.traceinfo.TraceInfo");
+			classLoader.delegateLoadingOf("ist.meic.pa.TraceTranslator");
 			String[] restArgs = new String[args.length - 1];
 			System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 			classLoader.run(args[0], restArgs);

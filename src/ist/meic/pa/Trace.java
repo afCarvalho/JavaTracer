@@ -1,7 +1,5 @@
 package ist.meic.pa;
 
-import ist.meic.pa.traceinfo.TraceInfo;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -16,7 +14,7 @@ import javassist.CtClass;
 public class Trace {
 
 	/** The trace info table. */
-	private static IdentityHashMap<Object, LinkedList<Integer>> objectMap = new IdentityHashMap<Object, LinkedList<Integer>>();
+	private static IdentityHashMap<Object, LinkedList<TraceKey>> objectMap = new IdentityHashMap<Object, LinkedList<TraceKey>>();
 	private static HashMap<Integer, TraceInfo> traceInfoMap = new HashMap<Integer, TraceInfo>();
 	private static final Trace INSTANCE = new Trace();
 
@@ -37,32 +35,20 @@ public class Trace {
 	 *            the info
 	 */
 	public void addInfo(TraceInfo info, Object[] args) {
-		int hash = info.hashCode();
-
-		if (!traceInfoMap.containsKey(hash)) {
-			traceInfoMap.put(hash, info);
+		if (!traceInfoMap.containsKey(info.getTraceHash())) {
+			traceInfoMap.put(info.getTraceHash(), info);
 		}
-		
-		if (args.length > 0) {
-			info.setArgument(true);
-		}
-		
-		System.err.println("Method: " + info.getBehaviour());
-		System.err.println("Argument: " + info.isArgument());
-		System.err.println("Result: " + info.isReturn());
-		System.err.println("---------------------------");
 
 		for (Object object : args) {
-			saveTraceInfoInObject(info, hash, object);
+			saveTraceInfoInObject(info, object);
+			objectMap.get(object).getLast().setArg(true);
 		}
-
 	}
 
 	public void addInfo(TraceInfo info, Object[] args, Object result) {
-		int hash = info.hashCode();
 		addInfo(info, args);
-		info.setReturn(true);
-		saveTraceInfoInObject(info, hash, result);
+		saveTraceInfoInObject(info, result);
+		objectMap.get(result).getLast().setResult(true);
 	}
 
 	/**
@@ -70,18 +56,17 @@ public class Trace {
 	 * @param hash
 	 * @param object
 	 */
-	private void saveTraceInfoInObject(TraceInfo info, int hash, Object object) {
-		LinkedList<Integer> list;
-		if (objectMap.containsKey(object)) {
-			list = objectMap.get(object);
-			if (list.getLast() == hash) {
+	private void saveTraceInfoInObject(TraceInfo info, Object object) {
+		LinkedList<TraceKey> list = objectMap.get(object);
+		if (list != null) {
+			if (list.getLast().getTraceHash() == info.getTraceHash()) {
 				info.incrementCounter();
 			} else {
-				list.addLast(hash);
+				list.addLast(new TraceKey(info.getTraceHash()));
 			}
 		} else {
-			list = new LinkedList<Integer>();
-			list.add(info.hashCode());
+			list = new LinkedList<TraceKey>();
+			list.add(new TraceKey(info.getTraceHash()));
 			objectMap.put(object, list);
 		}
 	}
@@ -94,20 +79,14 @@ public class Trace {
 	 */
 	static public void print(Object object) {
 		if (objectMap.size() > 0) {
-			
+
 			System.err.println("Tracing for " + object);
 			if (objectMap.containsKey(object)) {
-				for (int hash : objectMap.get(object)) {
-					traceInfoMap.get(hash).print();
+				for (TraceKey key : objectMap.get(object)) {
+					traceInfoMap.get(key.getTraceHash()).print(key.isArg(),
+							key.isResult());
 				}
 			}
-			
-			// se o obj for chave
-			/*
-			 * System.err.println("Tracing for " + object); for (TraceInfo info
-			 * : traceInfoTable) { if (info.getArgs() != null) {
-			 * info.printInfo(object); } }
-			 */
 		} else {
 			System.err.println("Tracing for object is nonexistent!");
 		}

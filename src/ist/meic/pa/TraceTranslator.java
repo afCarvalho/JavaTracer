@@ -1,6 +1,5 @@
 package ist.meic.pa;
 
-import ist.meic.pa.traceinfo.TraceInfo;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -40,7 +39,7 @@ public class TraceTranslator implements Translator {
 
 				@Override
 				public void edit(MethodCall m) throws CannotCompileException {
-					if (ctClass.getPackageName() == null) {
+				//	if (ctClass.getPackageName() == null) {
 						try {
 							final String info = "\""
 									+ m.getMethod().getLongName() + "\",\""
@@ -61,12 +60,12 @@ public class TraceTranslator implements Translator {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}
+					//}
 				}
 
 				@Override
 				public void edit(NewExpr expr) throws CannotCompileException {
-					if (ctClass.getPackageName() == null) {
+				//	if (ctClass.getPackageName() == null) {
 						try {
 							final String info = "\""
 									+ expr.getConstructor().getLongName()
@@ -81,7 +80,7 @@ public class TraceTranslator implements Translator {
 							e.printStackTrace();
 						}
 					}
-				}
+				//}
 			});
 		}
 	}
