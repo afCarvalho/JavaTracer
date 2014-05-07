@@ -3,7 +3,6 @@ package ist.meic.pa;
 import javassist.ClassPool;
 import javassist.Loader;
 import javassist.Translator;
-import javassist.bytecode.stackmap.Tracer;
 
 public class TraceVM {
 
@@ -20,6 +19,7 @@ public class TraceVM {
 			Loader classLoader = new Loader();
 			classLoader.addTranslator(pool, translator);
 			classLoader.delegateLoadingOf("ist.meic.pa.Trace");
+			classLoader.delegateLoadingOf("ist.meic.pa.traceinfo.TraceInfo");
 			String[] restArgs = new String[args.length - 1];
 			System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 			classLoader.run(args[0], restArgs);

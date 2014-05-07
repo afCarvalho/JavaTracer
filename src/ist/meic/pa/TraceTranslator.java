@@ -41,31 +41,21 @@ public class TraceTranslator implements Translator {
 				@Override
 				public void edit(MethodCall m) throws CannotCompileException {
 					if (ctClass.getPackageName() == null) {
-
 						try {
-							String methodName = "\""
-									+ m.getMethod().getLongName() + "\"";
-							String fileName = "\"" + m.getFileName() + "\"";
+							final String info = "\""
+									+ m.getMethod().getLongName() + "\",\""
+									+ m.getFileName() + "\","
+									+ m.getLineNumber() + ",";
 
 							if (m.getMethod().getReturnType()
 									.equals(CtClass.voidType)) {
 								m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
-										+ "$args,$type,"
-										+ methodName
-										+ ","
-										+ fileName
-										+ ","
-										+ m.getLineNumber()
+										+ info
+										+ "$args"
 										+ "); $_ = $proceed($$);}");
 							} else {
 								m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-										+ "$args,($w) $_,"
-										+ methodName
-										+ ","
-										+ fileName
-										+ ","
-										+ m.getLineNumber()
-										+ ");}");
+										+ info + "$args,($w) $_" + ");}");
 							}
 						} catch (NotFoundException e) {
 							// TODO Auto-generated catch block
@@ -76,23 +66,15 @@ public class TraceTranslator implements Translator {
 
 				@Override
 				public void edit(NewExpr expr) throws CannotCompileException {
-
 					if (ctClass.getPackageName() == null) {
-
 						try {
-
-							String methodName = "\""
+							final String info = "\""
 									+ expr.getConstructor().getLongName()
-									+ "\"";
-							String fileName = "\"" + expr.getFileName() + "\"";
+									+ "\",\"" + expr.getFileName() + "\"," + expr.getLineNumber() + ",";
 
 							expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-									+ "$args,($w) $_,"
-									+ methodName
-									+ ","
-									+ fileName
-									+ ","
-									+ expr.getLineNumber()
+									+ info
+									+ "$args,($w) $_"
 									+ ");}");
 						} catch (NotFoundException e) {
 							// TODO Auto-generated catch block
@@ -104,11 +86,15 @@ public class TraceTranslator implements Translator {
 		}
 	}
 
-	public static void traceMethod(Object[] args, Object result,
-			String methodName, String fileName, int line) {
+	public static void traceMethod(String methodName, String fileName,
+			int line, Object[] args, Object result) {
+		Trace.getTrace().addInfo(new TraceInfo(methodName, fileName, line),
+				args, result);
+	}
 
-		TraceInfo info = new TraceInfo(methodName, fileName, line);
-
-		Trace.getTrace().addInfo(args, result, info);
+	public static void traceMethod(String methodName, String fileName,
+			int line, Object[] args) {
+		Trace.getTrace().addInfo(new TraceInfo(methodName, fileName, line),
+				args);
 	}
 }
