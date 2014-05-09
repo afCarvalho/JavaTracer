@@ -36,6 +36,9 @@ public class TraceInfo {
 	}
 
 	public void printTraceMessage() {
+
+		 System.err.println(traceMessage + " " + isArgument + " " + isResult);
+
 		for (int i = 0; i < counter; i++) {
 			if (isArgument) {
 				System.err.println("  -> " + traceMessage);
@@ -51,10 +54,24 @@ public class TraceInfo {
 		counter++;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		TraceInfo info = (TraceInfo) o;
-		return info.getTraceMessage().equals(traceMessage)
-				&& info.isResult == isResult && info.isArgument == isArgument;
+	public boolean hasSameMessage(TraceInfo info) {
+		return info.getTraceMessage().equals(traceMessage);
+	}
+
+	public boolean hasSameRole(TraceInfo info) {
+		return info.isResult == isResult && info.isArgument == isArgument;
+	}
+
+	public boolean hasOppositeRole(TraceInfo info) {
+		return info.isArgOnly() && isResultOnly() || info.isResultOnly()
+				&& isArgOnly();
+	}
+
+	public boolean isArgOnly() {
+		return isArgument && !isResult;
+	}
+
+	public boolean isResultOnly() {
+		return !isArgument && isResult;
 	}
 }

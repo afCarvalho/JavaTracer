@@ -1,0 +1,109 @@
+package ist.meic.pa;
+
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import javassist.expr.Cast;
+import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
+import javassist.expr.Handler;
+import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
+
+public class TraceTranslatorExtended extends TraceTranslator {
+
+	public TraceTranslatorExtended() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	void traceMethods(final CtClass ctClass, final String className)
+			throws NotFoundException, CannotCompileException,
+			ClassNotFoundException {
+
+		for (final CtBehavior ctBehaviour : ctClass.getDeclaredBehaviors()) {
+			ctBehaviour.instrument(new ExprEditor() {
+
+				@Override
+				public void edit(MethodCall m) {
+					traceMethodCall(m);
+				}
+
+				@Override
+				public void edit(NewExpr expr) {
+					traceConstructors(expr);
+				}
+
+				@Override
+				public void edit(Handler handler) {
+					traceHandlers(handler);
+				}
+
+				@Override
+				public void edit(FieldAccess field) {
+					traceFields(field);
+				}
+
+				@Override
+				public void edit(Cast cast) {
+					traceCasts(cast);
+				}
+
+			});
+		}
+	}
+
+	protected void traceHandlers(Handler h) {
+		final String info = "\"" + h.where().getLongName() + "\",\""
+				+ h.getFileName() + "\"," + h.getLineNumber();
+
+		try {
+			h.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
+					+ info + ",$1);}");
+		} catch (CannotCompileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected void traceFields(FieldAccess f) {
+		try {
+			final String info = "\"" + f.where().getLongName() + "\",\""
+					+ f.getFileName() + "\"," + f.getLineNumber();
+
+			if (f.isReader()) {
+				f.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
+						+ info + ",($w)$_);}");
+			}
+
+			if (f.isWriter()) {
+				f.replace("{ist.meic.pa.TraceTranslatorExtended.traceObj("
+						+ info + ",($w)$1); $_ = $proceed($$);}");
+			}
+
+		} catch (CannotCompileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected void traceCasts(Cast c) {
+		try {
+			final String info = "\"" + c.where().getLongName() + "\",\""
+					+ c.getFileName() + "\"," + c.getLineNumber();
+			c.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceMethod("
+					+ info + ",$_);}");
+		} catch (CannotCompileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void traceObj(String methodName, String fileName, int line,
+			Object obj) {
+		// Trace.getTrace().addInfo(new TraceInfo(methodName, fileName, line,
+		// obj);
+	}
+}

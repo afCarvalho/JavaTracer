@@ -15,34 +15,6 @@ public class Trace {
 
 	/** The trace info table. */
 	private static IdentityHashMap<Object, LinkedList<TraceInfo>> objectMap = new IdentityHashMap<Object, LinkedList<TraceInfo>>();
-	private static final Trace INSTANCE = new Trace();
-
-	/**
-	 * Instantiates a new trace.
-	 */
-	private Trace() {
-	}
-
-	public static Trace getTrace() {
-		return INSTANCE;
-	}
-
-	public void addArgumentInfo(TraceInfo traceInfo, Object argument) {
-		traceInfo.setArg(true);
-		saveTraceInfoInObject(traceInfo, argument);
-
-	}
-
-	public void addResultInfo(TraceInfo traceInfo, Object[] args, Object result) {
-		traceInfo.setResult(true);
-		saveTraceInfoInObject(traceInfo, result);
-	}
-
-	/*
-	 * public void addInfo(TraceInfo traceInfo, Object[] args, Object result) {
-	 * //traceInfo.setResult(true); addInfo(traceInfo, args);
-	 * saveTraceInfoInObject(traceInfo, result); }
-	 */
 
 	/**
 	 * @param traceKey
@@ -50,15 +22,18 @@ public class Trace {
 	 * @param object
 	 * @return
 	 */
-	private static void saveTraceInfoInObject(TraceInfo traceKey, Object object) {
+	public static void addTraceInfo(TraceInfo traceKey, Object object) {
 		LinkedList<TraceInfo> list = objectMap.get(object);
 
 		if (list == null) {
 			list = new LinkedList<TraceInfo>();
 			list.add(traceKey);
 			objectMap.put(object, list);
-		} else if (list.getLast().equals(traceKey)) {
+		} else if (traceKey.hasSameMessage(list.getLast()) && traceKey.hasSameRole(list.getLast())) {
 			list.getLast().incrementCounter();
+		} else if (traceKey.hasSameMessage(list.getLast()) && traceKey.hasOppositeRole(list.getLast())) {
+			list.getLast().setArg(true);
+			list.getLast().setResult(true);
 		} else {
 			list.addLast(traceKey);
 		}

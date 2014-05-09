@@ -2,6 +2,7 @@ package ist.meic.pa;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -34,65 +35,77 @@ public class TraceTranslator implements Translator {
 	void traceMethods(final CtClass ctClass, final String className)
 			throws NotFoundException, CannotCompileException,
 			ClassNotFoundException {
-		for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-			ctMethod.instrument(new ExprEditor() {
+
+		for (final CtBehavior ctBehaviour : ctClass.getDeclaredBehaviors()) {
+			ctBehaviour.instrument(new ExprEditor() {
 
 				@Override
-				public void edit(MethodCall m) throws CannotCompileException {
-					// if (ctClass.getPackageName() == null) {
-					try {
-						final String info = "\"" + m.getMethod().getLongName()
-								+ "\",\"" + m.getFileName() + "\","
-								+ m.getLineNumber() + ",";
-
-						if (m.getMethod().getReturnType()
-								.equals(CtClass.voidType)) {
-							m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
-									+ info + "$args" + "); $_ = $proceed($$);}");
-						} else {
-							m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-									+ info + "$args,($w) $_" + ");}");
-						}
-					} catch (NotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					// }
+				public void edit(MethodCall m) {
+					traceMethodCall(m);
 				}
 
 				@Override
-				public void edit(NewExpr expr) throws CannotCompileException {
-					// if (ctClass.getPackageName() == null) {
-					try {
-						final String info = "\""
-								+ expr.getConstructor().getLongName() + "\",\""
-								+ expr.getFileName() + "\","
-								+ expr.getLineNumber() + ",";
-
-						expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-								+ info + "$args,($w) $_" + ");}");
-					} catch (NotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				public void edit(NewExpr expr) {
+					traceConstructors(expr);
 				}
-				// }
+
 			});
+		}
+	}
+
+	protected void traceMethodCall(MethodCall m) {
+		try {
+			final String info = "\"" + m.getMethod().getLongName() + "\",\""
+					+ m.getFileName() + "\"," + m.getLineNumber();
+
+			if (m.getMethod().getReturnType().equals(CtClass.voidType)) {
+				m.replace("{ist.meic.pa.TraceTranslator.traceMethod(" + info
+						+ ",$args); $_ = $proceed($$);}");
+			} else {
+				m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+						+ info + ",$args,($w) $_);}");
+			}
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		} catch (CannotCompileException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void traceConstructors(NewExpr expr) {
+		try {
+			final String info = "\"" + expr.getConstructor().getLongName()
+					+ "\",\"" + expr.getFileName() + "\","
+					+ expr.getLineNumber();
+
+			expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+					+ info + ",$args,($w) $_);}");
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CannotCompileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	public static void traceMethod(String methodName, String fileName,
 			int line, Object[] args, Object result) {
 		traceMethod(methodName, fileName, line, args);
-		Trace.getTrace().addResultInfo(
-				new TraceInfo(methodName, fileName, line), args, result);
+
+		TraceInfo info = new TraceInfo(methodName, fileName, line);
+		info.setResult(true);
+		Trace.addTraceInfo(info, args);
 	}
 
 	public static void traceMethod(String methodName, String fileName,
 			int line, Object[] args) {
+		TraceInfo info;
+
 		for (Object arg : args) {
-			Trace.getTrace().addArgumentInfo(
-					new TraceInfo(methodName, fileName, line), arg);
+			info = new TraceInfo(methodName, fileName, line);
+			info.setArg(true);
+			Trace.addTraceInfo(info, arg);
 		}
 	}
 }

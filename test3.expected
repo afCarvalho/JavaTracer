@@ -1,0 +1,17 @@
+Tracing for MyObj
+  <- java.lang.String(java.lang.String) on Test3.java:12
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test3.java:14
+Tracing for MyObj
+  <- java.lang.String(java.lang.String) on Test3.java:12
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test3.java:14
+  -> Test03.identity(java.lang.Object) on Test3.java:17
+  <- Test03.identity(java.lang.Object) on Test3.java:17
+  -> Test03.identity(java.lang.Object) on Test3.java:17
+  <- Test03.identity(java.lang.Object) on Test3.java:17
+  -> Test03.identity(java.lang.Object) on Test3.java:17
+  <- Test03.identity(java.lang.Object) on Test3.java:17
+  -> Test03.identity(java.lang.Object) on Test3.java:17
+  <- Test03.identity(java.lang.Object) on Test3.java:17
+  -> Test03.identity(java.lang.Object) on Test3.java:17
+  <- Test03.identity(java.lang.Object) on Test3.java:17
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test3.java:20
