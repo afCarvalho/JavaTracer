@@ -29,14 +29,21 @@ public class Trace {
 			list = new LinkedList<TraceInfo>();
 			list.add(traceInfo);
 			objectMap.put(object, list);
-		} else if (traceInfo.hasSameMessage(list.getLast()) && traceInfo.hasSameRole(list.getLast())) {
-			list.getLast().incrementCounter();
-		} else if (traceInfo.hasSameMessage(list.getLast()) && traceInfo.hasOppositeRole(list.getLast())) {
+		} else if (traceInfo.hasSameMessage(list.getLast())
+				&& traceInfo.hasOppositeRole(list.getLast())) {
 			list.getLast().setArg(true);
 			list.getLast().setResult(true);
 		} else {
 			list.addLast(traceInfo);
 		}
+
+		if (list.size() > 1
+				&& list.getLast().hasSameRole(list.get(list.size() - 2))
+				&& list.getLast().hasSameMessage(list.get(list.size() - 2))) {
+			list.removeLast();
+			list.getLast().incrementCounter();
+		}
+
 	}
 
 	/**
