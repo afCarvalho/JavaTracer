@@ -5,6 +5,9 @@ import javassist.Loader;
 import javassist.Translator;
 
 public class TraceVM {
+	
+	private static final String TRACE = "ist.meic.pa.Trace";
+	private static final String TRANSLATOR = "ist.meic.pa.TraceTranslator";
 
 	public TraceVM() {
 		// Nothing to do here
@@ -14,15 +17,23 @@ public class TraceVM {
 		if (args.length < 1) {
 			System.err.println("Usage: TraceVM <className>");
 		} else {
-			Translator translator = new TraceTranslator();
-			ClassPool pool = ClassPool.getDefault();
 			Loader classLoader = new Loader();
-			classLoader.addTranslator(pool, translator);
-			classLoader.delegateLoadingOf("ist.meic.pa.Trace");
-			classLoader.delegateLoadingOf("ist.meic.pa.TraceTranslator");
-			String[] restArgs = new String[args.length - 1];
-			System.arraycopy(args, 1, restArgs, 0, restArgs.length);
-			classLoader.run(args[0], restArgs);
+			classLoader.addTranslator(ClassPool.getDefault(),
+					new TraceTranslator());
+			delegateClasses(classLoader);
+			runClassLoader(classLoader, args);
 		}
 	}
+	
+	public static void delegateClasses(Loader loader){
+		loader.delegateLoadingOf(TRACE);
+		loader.delegateLoadingOf(TRANSLATOR);		
+	}
+	
+	public static void runClassLoader(Loader classLoader, String args[]) throws Throwable{
+		String[] restArgs = new String[args.length - 1];
+		System.arraycopy(args, 1, restArgs, 0, restArgs.length);
+		classLoader.run(args[0], restArgs);
+	}
+	
 }

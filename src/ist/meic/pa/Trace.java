@@ -14,8 +14,7 @@ import javassist.CtClass;
 public class Trace {
 
 	/** The trace info table. */
-	private static IdentityHashMap<Object, LinkedList<TraceKey>> objectMap = new IdentityHashMap<Object, LinkedList<TraceKey>>();
-	private static HashMap<Integer, TraceInfo> traceInfoMap = new HashMap<Integer, TraceInfo>();
+	private static IdentityHashMap<Object, LinkedList<TraceInfo>> objectMap = new IdentityHashMap<Object, LinkedList<TraceInfo>>();
 	private static final Trace INSTANCE = new Trace();
 
 	/**
@@ -28,46 +27,40 @@ public class Trace {
 		return INSTANCE;
 	}
 
-	/**
-	 * Creates a new info.
-	 * 
-	 * @param info
-	 *            the info
+	public void addArgumentInfo(TraceInfo traceInfo, Object argument) {
+		traceInfo.setArg(true);
+		saveTraceInfoInObject(traceInfo, argument);
+
+	}
+
+	public void addResultInfo(TraceInfo traceInfo, Object[] args, Object result) {
+		traceInfo.setResult(true);
+		saveTraceInfoInObject(traceInfo, result);
+	}
+
+	/*
+	 * public void addInfo(TraceInfo traceInfo, Object[] args, Object result) {
+	 * //traceInfo.setResult(true); addInfo(traceInfo, args);
+	 * saveTraceInfoInObject(traceInfo, result); }
 	 */
-	public void addInfo(TraceInfo info, Object[] args) {
-		if (!traceInfoMap.containsKey(info.getTraceHash())) {
-			traceInfoMap.put(info.getTraceHash(), info);
-		}
-
-		for (Object object : args) {
-			saveTraceInfoInObject(info, object);
-			objectMap.get(object).getLast().setArg(true);
-		}
-	}
-
-	public void addInfo(TraceInfo info, Object[] args, Object result) {
-		addInfo(info, args);
-		saveTraceInfoInObject(info, result);
-		objectMap.get(result).getLast().setResult(true);
-	}
 
 	/**
-	 * @param info
+	 * @param traceKey
 	 * @param hash
 	 * @param object
+	 * @return
 	 */
-	private void saveTraceInfoInObject(TraceInfo info, Object object) {
-		LinkedList<TraceKey> list = objectMap.get(object);
-		if (list != null) {
-			if (list.getLast().getTraceHash() == info.getTraceHash()) {
-				info.incrementCounter();
-			} else {
-				list.addLast(new TraceKey(info.getTraceHash()));
-			}
-		} else {
-			list = new LinkedList<TraceKey>();
-			list.add(new TraceKey(info.getTraceHash()));
+	private static void saveTraceInfoInObject(TraceInfo traceKey, Object object) {
+		LinkedList<TraceInfo> list = objectMap.get(object);
+
+		if (list == null) {
+			list = new LinkedList<TraceInfo>();
+			list.add(traceKey);
 			objectMap.put(object, list);
+		} else if (list.getLast().equals(traceKey)) {
+			list.getLast().incrementCounter();
+		} else {
+			list.addLast(traceKey);
 		}
 	}
 
@@ -78,14 +71,12 @@ public class Trace {
 	 *            the object
 	 */
 	static public void print(Object object) {
-		if (objectMap.size() > 0) {
+		LinkedList<TraceInfo> list = objectMap.get(object);
 
+		if (list.size() > 0) {
 			System.err.println("Tracing for " + object);
-			if (objectMap.containsKey(object)) {
-				for (TraceKey key : objectMap.get(object)) {
-					traceInfoMap.get(key.getTraceHash()).print(key.isArg(),
-							key.isResult());
-				}
+			for (TraceInfo key : list) {
+				key.printTraceMessage();
 			}
 		} else {
 			System.err.println("Tracing for object is nonexistent!");

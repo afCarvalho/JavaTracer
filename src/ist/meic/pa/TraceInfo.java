@@ -1,126 +1,60 @@
 package ist.meic.pa;
 
-/**
- * The Class TraceInfo.
- * 
- * This class stores trace information.
- */
 public class TraceInfo {
-
-	/** Method's long name. */
-	private String behaviour;
-
-	/** File where the method is called. */
-	private String file;
-
-	/** Line where the method is called. */
-	private int line;
-
-	/** The number of times a line must be printed. */
+	private String traceMessage;
+	private boolean isArgument;
+	private boolean isResult;
 	private int counter;
 
-	private int traceHash;
-
-	/**
-	 * Instantiates a new trace info.
-	 * 
-	 * @param behaviour
-	 *            the behaviour
-	 * @param file
-	 *            the file
-	 * @param line
-	 *            the line
-	 */
-	public TraceInfo(String behaviour, String file, int line) {
-		this.behaviour = behaviour;
-		this.file = file;
-		this.line = line;
-		this.counter = 0;
-		traceHash = this.hashCode();
+	public TraceInfo(String methodName, String fileName, int line) {
+		setTraceMessage(methodName, fileName, line);
+		counter = 1;
 	}
 
-	/**
-	 * Gets the method's long name.
-	 * 
-	 * @return the behaviour
-	 */
-	public String getBehaviour() {
-		return behaviour;
+	public boolean isArg() {
+		return isArgument;
 	}
 
-	/**
-	 * Gets the file where the method is called.
-	 * 
-	 * @return the file
-	 */
-	public String getFile() {
-		return file;
+	public void setArg(boolean isArgument) {
+		this.isArgument = isArgument;
 	}
 
-	/**
-	 * Gets the line where the method is called.
-	 * 
-	 * @return the line
-	 */
-	public int getLine() {
-		return line;
+	public boolean isResult() {
+		return isResult;
 	}
 
-	/**
-	 * Gets the info.
-	 * 
-	 * @param object
-	 * @return a string representing the info
-	 */
-	public String getInfo() {
-		return getBehaviour() + " on " + getFile() + ":" + getLine();
+	public void setResult(boolean isResult) {
+		this.isResult = isResult;
 	}
 
-	/**
-	 * Gets the counter.
-	 * 
-	 * @return the counter
-	 */
-	public final int getCounter() {
-		return counter;
+	public String getTraceMessage() {
+		return traceMessage;
 	}
 
-	/**
-	 * Increments the counter.
-	 * 
-	 * @return the new value of the counter.
-	 */
-	public int incrementCounter() {
-		return counter++;
+	public void setTraceMessage(String behaviour, String file, int line) {
+		traceMessage = behaviour + " on " + file + ":" + line;
 	}
 
-	public void print(boolean isArgument, boolean isResult) {
-		if (isArgument) {
-			System.err.println("  -> " + getInfo());
-		}
+	public void printTraceMessage() {
+		for (int i = 0; i < counter; i++) {
+			if (isArgument) {
+				System.err.println("  -> " + traceMessage);
+			}
 
-		if (isResult) {
-			System.err.println("  <- " + getInfo());
+			if (isResult) {
+				System.err.println("  <- " + traceMessage);
+			}
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	public void incrementCounter() {
+		counter++;
+	}
+
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((behaviour == null) ? 0 : behaviour.hashCode());
-		result = prime * result + ((file == null) ? 0 : file.hashCode());
-		result = prime * result + line;
-		return result;
-	}
-
-	public int getTraceHash() {
-		return traceHash;
+	public boolean equals(Object o) {
+		TraceInfo info = (TraceInfo) o;
+		return info.getTraceMessage().equals(traceMessage)
+				&& info.isResult == isResult && info.isArgument == isArgument;
 	}
 }
