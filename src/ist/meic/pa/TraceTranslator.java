@@ -2,6 +2,7 @@ package ist.meic.pa;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -34,9 +35,9 @@ public class TraceTranslator implements Translator {
 	void traceMethods(final CtClass ctClass, final String className)
 			throws NotFoundException, CannotCompileException,
 			ClassNotFoundException {
-		for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-			ctMethod.instrument(traceMethodCall());
-			ctMethod.instrument(traceConstructors());
+		for (final CtBehavior ctBehaviour : ctClass.getDeclaredBehaviors()) {
+			ctBehaviour.instrument(traceMethodCall());
+			ctBehaviour.instrument(traceConstructors());
 		}
 	}
 
