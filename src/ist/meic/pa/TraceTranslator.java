@@ -35,54 +35,54 @@ public class TraceTranslator implements Translator {
 			throws NotFoundException, CannotCompileException,
 			ClassNotFoundException {
 		for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-			ctMethod.instrument(new ExprEditor() {
-
-				@Override
-				public void edit(MethodCall m) throws CannotCompileException {
-				//	if (ctClass.getPackageName() == null) {
-						try {
-							final String info = "\""
-									+ m.getMethod().getLongName() + "\",\""
-									+ m.getFileName() + "\","
-									+ m.getLineNumber() + ",";
-
-							if (m.getMethod().getReturnType()
-									.equals(CtClass.voidType)) {
-								m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
-										+ info
-										+ "$args"
-										+ "); $_ = $proceed($$);}");
-							} else {
-								m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-										+ info + "$args,($w) $_" + ");}");
-							}
-						} catch (NotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					//}
-				}
-
-				@Override
-				public void edit(NewExpr expr) throws CannotCompileException {
-				//	if (ctClass.getPackageName() == null) {
-						try {
-							final String info = "\""
-									+ expr.getConstructor().getLongName()
-									+ "\",\"" + expr.getFileName() + "\"," + expr.getLineNumber() + ",";
-
-							expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-									+ info
-									+ "$args,($w) $_"
-									+ ");}");
-						} catch (NotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				//}
-			});
+			ctMethod.instrument(traceMethodCall());
+			ctMethod.instrument(traceConstructors());
 		}
+	}
+
+	protected ExprEditor traceMethodCall() {
+		return new ExprEditor() {
+
+			@Override
+			public void edit(MethodCall m) throws CannotCompileException {
+				try {
+					final String info = "\"" + m.getMethod().getLongName()
+							+ "\",\"" + m.getFileName() + "\","
+							+ m.getLineNumber();
+
+					if (m.getMethod().getReturnType().equals(CtClass.voidType)) {
+						m.replace("{ist.meic.pa.TraceTranslator.traceMethod("
+								+ info + ",$args); $_ = $proceed($$);}");
+					} else {
+						m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+								+ info + ",$args,($w) $_);}");
+					}
+				} catch (NotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+	}
+
+	protected ExprEditor traceConstructors() {
+		return new ExprEditor() {
+
+			@Override
+			public void edit(NewExpr expr) throws CannotCompileException {
+				try {
+					final String info = "\""
+							+ expr.getConstructor().getLongName() + "\",\""
+							+ expr.getFileName() + "\"," + expr.getLineNumber();
+
+					expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+							+ info + ",$args,($w) $_);}");
+				} catch (NotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
 	}
 
 	public static void traceMethod(String methodName, String fileName,
