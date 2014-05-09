@@ -22,20 +22,20 @@ public class Trace {
 	 * @param object
 	 * @return
 	 */
-	public static void addTraceInfo(TraceInfo traceKey, Object object) {
+	public static void addTraceInfo(TraceInfo traceInfo, Object object) {
 		LinkedList<TraceInfo> list = objectMap.get(object);
 
 		if (list == null) {
 			list = new LinkedList<TraceInfo>();
-			list.add(traceKey);
+			list.add(traceInfo);
 			objectMap.put(object, list);
-		} else if (traceKey.hasSameMessage(list.getLast()) && traceKey.hasSameRole(list.getLast())) {
+		} else if (traceInfo.hasSameMessage(list.getLast()) && traceInfo.hasSameRole(list.getLast())) {
 			list.getLast().incrementCounter();
-		} else if (traceKey.hasSameMessage(list.getLast()) && traceKey.hasOppositeRole(list.getLast())) {
+		} else if (traceInfo.hasSameMessage(list.getLast()) && traceInfo.hasOppositeRole(list.getLast())) {
 			list.getLast().setArg(true);
 			list.getLast().setResult(true);
 		} else {
-			list.addLast(traceKey);
+			list.addLast(traceInfo);
 		}
 	}
 

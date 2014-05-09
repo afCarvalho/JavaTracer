@@ -95,7 +95,7 @@ public class TraceTranslator implements Translator {
 
 		TraceInfo info = new TraceInfo(methodName, fileName, line);
 		info.setResult(true);
-		Trace.addTraceInfo(info, args);
+		Trace.addTraceInfo(info, result);
 	}
 
 	public static void traceMethod(String methodName, String fileName,

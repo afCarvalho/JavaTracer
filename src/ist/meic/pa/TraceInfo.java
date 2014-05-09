@@ -37,7 +37,7 @@ public class TraceInfo {
 
 	public void printTraceMessage() {
 
-		 System.err.println(traceMessage + " " + isArgument + " " + isResult);
+		 //System.err.println(traceMessage + " " + isArgument + " " + isResult);
 
 		for (int i = 0; i < counter; i++) {
 			if (isArgument) {
