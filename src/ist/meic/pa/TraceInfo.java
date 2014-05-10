@@ -67,11 +67,11 @@ public class TraceInfo {
 				&& isArgOnly();
 	}
 
-	public boolean isArgOnly() {
+	private boolean isArgOnly() {
 		return isArgument && !isResult;
 	}
 
-	public boolean isResultOnly() {
+	private boolean isResultOnly() {
 		return !isArgument && isResult;
 	}
 }

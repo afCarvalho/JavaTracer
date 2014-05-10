@@ -9,17 +9,16 @@ import javassist.NotFoundException;
 import javassist.Translator;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import javassist.expr.NewArray;
 import javassist.expr.NewExpr;
 
 public class TraceTranslator implements Translator {
 
 	public TraceTranslator() {
-		// Nothing to do here
 	}
 
 	public void start(ClassPool pool) throws NotFoundException,
 			CannotCompileException {
-		// Nothing to do here
 	}
 
 	public void onLoad(ClassPool pool, String className)
@@ -49,21 +48,23 @@ public class TraceTranslator implements Translator {
 					traceConstructors(expr);
 				}
 
+				@Override
+				public void edit(NewArray arr) {
+					traceArray(arr);
+				}
+
 			});
 		}
 	}
 
 	protected void traceMethodCall(MethodCall m) {
 		try {
-			final String info = "\"" + m.getMethod().getLongName() + "\",\""
-					+ m.getFileName() + "\"," + m.getLineNumber();
-
 			if (m.getMethod().getReturnType().equals(CtClass.voidType)) {
-				m.replace("{ist.meic.pa.TraceTranslator.traceMethod(" + info
-						+ ",$args); $_ = $proceed($$);}");
+				m.replace(beforeInjection(m.getMethod().getLongName(),
+						m.getFileName(), m.getLineNumber()));
 			} else {
-				m.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-						+ info + ",$args,($w) $_);}");
+				afterInjection(m.getMethod().getLongName(), m.getFileName(),
+						m.getLineNumber());
 			}
 		} catch (NotFoundException e) {
 			e.printStackTrace();
@@ -74,19 +75,37 @@ public class TraceTranslator implements Translator {
 
 	protected void traceConstructors(NewExpr expr) {
 		try {
-			final String info = "\"" + expr.getConstructor().getLongName()
-					+ "\",\"" + expr.getFileName() + "\","
-					+ expr.getLineNumber();
-
-			expr.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-					+ info + ",$args,($w) $_);}");
+			expr.replace(afterInjection(expr.getConstructor().getLongName(),
+					expr.getFileName(), expr.getLineNumber()));
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CannotCompileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	protected void traceArray(NewArray arr) {
+		try {
+			arr.replace(afterInjection(arr.where().getLongName(),
+					arr.getFileName(), arr.getLineNumber()));
+		} catch (CannotCompileException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String afterInjection(String name, String file, int line) {
+		return "{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
+				+ getInfoArgs(name, file, line) + ",$args,($w) $_);}";
+	}
+
+	public String beforeInjection(String name, String file, int line) {
+		return "{ist.meic.pa.TraceTranslator.traceMethod("
+				+ getInfoArgs(name, file, line)
+				+ ",$args); $_ = $proceed($$);}";
+	}
+
+	public String getInfoArgs(String name, String file, int line) {
+		return "\"" + name + "\",\"" + file + "\"," + line;
 	}
 
 	public static void traceMethod(String methodName, String fileName,
