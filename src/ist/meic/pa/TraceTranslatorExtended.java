@@ -3,7 +3,6 @@ package ist.meic.pa;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
-import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.expr.Cast;
 import javassist.expr.ExprEditor;
@@ -12,6 +11,11 @@ import javassist.expr.Handler;
 import javassist.expr.MethodCall;
 import javassist.expr.NewExpr;
 
+/**
+ * 
+ * This class represents the translator of handlers, fields and casts
+ * 
+ */
 public class TraceTranslatorExtended extends TraceTranslator {
 
 	public TraceTranslatorExtended() {
@@ -55,11 +59,16 @@ public class TraceTranslatorExtended extends TraceTranslator {
 		}
 	}
 
+	/**
+	 * Traces exception handlers
+	 * 
+	 * @param h
+	 *            - handler
+	 */
 	protected void traceHandlers(Handler h) {
-		final String info = "\"" + h.where().getLongName() + "\",\""
-				+ h.getFileName() + "\"," + h.getLineNumber();
-
 		try {
+			final String info = "\"" + h.where().getLongName() + "\",\""
+					+ h.getFileName() + "\"," + h.getLineNumber();
 			h.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
 					+ info + ",$1);}");
 		} catch (CannotCompileException e) {
@@ -68,11 +77,16 @@ public class TraceTranslatorExtended extends TraceTranslator {
 		}
 	}
 
+	/**
+	 * Traces fields
+	 * 
+	 * @param f
+	 *            - field
+	 */
 	protected void traceFields(FieldAccess f) {
 		try {
 			final String info = "\"" + f.where().getLongName() + "\",\""
 					+ f.getFileName() + "\"," + f.getLineNumber();
-
 			if (f.isReader()) {
 				f.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
 						+ info + ",($w)$_);}");
@@ -84,11 +98,16 @@ public class TraceTranslatorExtended extends TraceTranslator {
 			}
 
 		} catch (CannotCompileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Traces casts
+	 * 
+	 * @param c
+	 *            - cast
+	 */
 	protected void traceCasts(Cast c) {
 		try {
 			final String info = "\"" + c.where().getLongName() + "\",\""

@@ -2,10 +2,9 @@ package ist.meic.pa;
 
 import javassist.ClassPool;
 import javassist.Loader;
-import javassist.Translator;
 
 public class TraceVM {
-	
+
 	private static final String TRACE = "ist.meic.pa.Trace";
 	private static final String TRANSLATOR = "ist.meic.pa.TraceTranslator";
 
@@ -24,16 +23,31 @@ public class TraceVM {
 			runClassLoader(classLoader, args);
 		}
 	}
-	
-	public static void delegateClasses(Loader loader){
+
+	/**
+	 * Delegates classes to a different VM
+	 * 
+	 * @param loader
+	 */
+	public static void delegateClasses(Loader loader) {
 		loader.delegateLoadingOf(TRACE);
-		loader.delegateLoadingOf(TRANSLATOR);		
+		loader.delegateLoadingOf(TRANSLATOR);
 	}
-	
-	public static void runClassLoader(Loader classLoader, String args[]) throws Throwable{
+
+	/**
+	 * Prepares and runs the class loader
+	 * 
+	 * @param classLoader
+	 *            - class loader
+	 * @param args
+	 *            - arguments to be passed
+	 * @throws Throwable
+	 */
+	public static void runClassLoader(Loader classLoader, String args[])
+			throws Throwable {
 		String[] restArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 		classLoader.run(args[0], restArgs);
 	}
-	
+
 }

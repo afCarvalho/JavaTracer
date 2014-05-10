@@ -4,7 +4,6 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtBehavior;
 import javassist.CtClass;
-import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.Translator;
 import javassist.expr.ExprEditor;
@@ -12,6 +11,11 @@ import javassist.expr.MethodCall;
 import javassist.expr.NewArray;
 import javassist.expr.NewExpr;
 
+/**
+ * 
+ * This class represents the translator of methods, constructors and arrays
+ * 
+ */
 public class TraceTranslator implements Translator {
 
 	public TraceTranslator() {
@@ -52,19 +56,24 @@ public class TraceTranslator implements Translator {
 				public void edit(NewArray arr) {
 					traceArray(arr);
 				}
-
 			});
 		}
 	}
 
+	/**
+	 * Traces method calls
+	 * 
+	 * @param m
+	 *            - method call
+	 */
 	protected void traceMethodCall(MethodCall m) {
 		try {
 			if (m.getMethod().getReturnType().equals(CtClass.voidType)) {
 				m.replace(beforeInjection(m.getMethod().getLongName(),
 						m.getFileName(), m.getLineNumber()));
 			} else {
-				afterInjection(m.getMethod().getLongName(), m.getFileName(),
-						m.getLineNumber());
+				m.replace(afterInjection(m.getMethod().getLongName(),
+						m.getFileName(), m.getLineNumber()));
 			}
 		} catch (NotFoundException e) {
 			e.printStackTrace();
@@ -73,6 +82,12 @@ public class TraceTranslator implements Translator {
 		}
 	}
 
+	/**
+	 * Traces constructor calls
+	 * 
+	 * @param expr
+	 *            - construtor expression call
+	 */
 	protected void traceConstructors(NewExpr expr) {
 		try {
 			expr.replace(afterInjection(expr.getConstructor().getLongName(),
@@ -84,6 +99,12 @@ public class TraceTranslator implements Translator {
 		}
 	}
 
+	/**
+	 * Traces array calls
+	 * 
+	 * @param arr
+	 *            - array expression call
+	 */
 	protected void traceArray(NewArray arr) {
 		try {
 			arr.replace(afterInjection(arr.where().getLongName(),
@@ -93,23 +114,78 @@ public class TraceTranslator implements Translator {
 		}
 	}
 
+	/**
+	 * Code to be injected before method is executed
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @return - string with instructions to be injected
+	 */
 	public String afterInjection(String name, String file, int line) {
 		return "{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
 				+ getInfoArgs(name, file, line) + ",$args,($w) $_);}";
 	}
 
+	/**
+	 * Code to be injected after method is executed
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @return - string with instructions to be injected
+	 */
 	public String beforeInjection(String name, String file, int line) {
 		return "{ist.meic.pa.TraceTranslator.traceMethod("
 				+ getInfoArgs(name, file, line)
 				+ ",$args); $_ = $proceed($$);}";
 	}
 
+	/**
+	 * Arranges the string of arguments to pass to injected methods
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @return - composed string
+	 */
 	public String getInfoArgs(String name, String file, int line) {
 		return "\"" + name + "\",\"" + file + "\"," + line;
 	}
 
+	/**
+	 * Method to be injected when result is relevant
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @param args
+	 *            - call arguments
+	 * @param result
+	 *            - call result
+	 */
 	public static void traceMethod(String methodName, String fileName,
 			int line, Object[] args, Object result) {
+
+		TraceInfo infos[] = new TraceInfo[args.length];
+
+		for (int i = 0; i < infos.length; i++) {
+			infos[i] = new TraceInfo(methodName, fileName, line);
+
+		}
+
 		traceMethod(methodName, fileName, line, args);
 
 		TraceInfo info = new TraceInfo(methodName, fileName, line);
@@ -117,6 +193,18 @@ public class TraceTranslator implements Translator {
 		Trace.addTraceInfo(info, result);
 	}
 
+	/**
+	 * Method to be injected when only args are relevant
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @param args
+	 *            - call arguments
+	 */
 	public static void traceMethod(String methodName, String fileName,
 			int line, Object[] args) {
 		TraceInfo info;

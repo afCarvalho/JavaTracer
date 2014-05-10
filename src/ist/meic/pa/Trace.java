@@ -1,7 +1,6 @@
 package ist.meic.pa;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 
@@ -13,13 +12,20 @@ import javassist.CtClass;
  */
 public class Trace {
 
-	/** The trace info table. */
+	/**
+	 * The trace info table. It maps objects with corresponding tracing
+	 * information
+	 * */
 	private static IdentityHashMap<Object, LinkedList<TraceInfo>> objectMap = new IdentityHashMap<Object, LinkedList<TraceInfo>>();
 
 	/**
-	 * @param traceKey
-	 * @param hash
+	 * Adds information to the map containing trace information about each
+	 * object
+	 * 
+	 * @param traceInfo
+	 *            - The information to add
 	 * @param object
+	 *            - the corresponding object
 	 * @return
 	 */
 	public static void addTraceInfo(TraceInfo traceInfo, Object object) {
@@ -43,14 +49,13 @@ public class Trace {
 			list.removeLast();
 			list.getLast().incrementCounter();
 		}
-
 	}
 
 	/**
-	 * Prints the.
+	 * Prints collected trace information
 	 * 
 	 * @param object
-	 *            the object
+	 *            the object from which information will be printed
 	 */
 	static public void print(Object object) {
 		LinkedList<TraceInfo> list = objectMap.get(object);
