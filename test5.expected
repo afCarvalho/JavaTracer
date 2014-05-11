@@ -1,0 +1,28 @@
+Tracing for teste
+  <- java.lang.String(java.lang.String) on Test5.java:24
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:26
+Tracing for true
+  <- java.lang.Boolean.valueOf(boolean) on Test5.java:28
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:28
+Tracing for teste:extra
+  <- java.lang.StringBuilder.toString() on Test5.java:30
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:32
+Tracing for Test05Aux@12f6684
+  <- Test05Aux() on Test5.java:34
+  -> Test05.aux(Test05Aux,boolean) on Test5.java:36
+  <- Test05.aux(Test05Aux,boolean) on Test5.java:36
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:38
+Tracing for Test05Aux@12f6684
+  <- Test05Aux() on Test5.java:34
+  -> Test05.aux(Test05Aux,boolean) on Test5.java:36
+  <- Test05.aux(Test05Aux,boolean) on Test5.java:36
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:38
+  -> Test05Aux.ola(Test05Aux) on Test05Aux.java:12
+  <- Test05Aux.ola(Test05Aux) on Test05Aux.java:12
+  -> Test05Aux.auxOutraClasse(Test05Aux) on Test5.java:20
+  <- Test05Aux.auxOutraClasse(Test05Aux) on Test5.java:20
+  -> Test05.aux2(Test05Aux) on Test5.java:15
+  <- Test05.aux2(Test05Aux) on Test5.java:15
+  -> Test05.aux(Test05Aux,boolean) on Test5.java:40
+  <- Test05.aux(Test05Aux,boolean) on Test5.java:40
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:42
