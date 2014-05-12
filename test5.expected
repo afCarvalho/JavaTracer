@@ -7,12 +7,12 @@ Tracing for true
 Tracing for teste:extra
   <- java.lang.StringBuilder.toString() on Test5.java:30
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:32
-Tracing for Test05Aux@12f6684
+Tracing for Test05Aux@17172ea
   <- Test05Aux() on Test5.java:34
   -> Test05.aux(Test05Aux,boolean) on Test5.java:36
   <- Test05.aux(Test05Aux,boolean) on Test5.java:36
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test5.java:38
-Tracing for Test05Aux@12f6684
+Tracing for Test05Aux@17172ea
   <- Test05Aux() on Test5.java:34
   -> Test05.aux(Test05Aux,boolean) on Test5.java:36
   <- Test05.aux(Test05Aux,boolean) on Test5.java:36

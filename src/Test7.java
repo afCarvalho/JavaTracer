@@ -4,8 +4,6 @@ import java.util.*;
 
 class Test07 {
 
-	Map m = new HashMap();
-
 	public Object identity(Object o) {
 		return o;
 	}
@@ -14,9 +12,9 @@ class Test07 {
 		Object o = new String("MyObj");
 
 		try {
-			m.containsKey(null);
-		} catch (NullPointerException e) {
-			System.out.println(e.getMessage());
+			throw new Test7Exception(o);
+		} catch (Test7Exception e) {
+			System.err.println(e.getMessage());
 		}
 
 		Trace.print(o);

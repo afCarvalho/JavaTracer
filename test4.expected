@@ -1,0 +1,37 @@
+LION
+BIG DOG
+BIRD
+LION
+CAT
+RAT
+LION
+BIG DOG
+BIRD
+LION
+CAT
+RAT
+LION
+BIG DOG
+BIRD
+ANIMAL
+Tracing for [I@b169f8
+  <- Test04.test(int) on Test4.java:58
+  -> Test04$Zoo.lion(java.lang.Object) on Test4.java:64
+  -> Test04$Zoo.dog(java.lang.Object) on Test4.java:69
+  -> Test04$Zoo.bird(java.lang.Object) on Test4.java:70
+  -> Test04$Zoo.lion(java.lang.Object) on Test4.java:64
+  -> Test04$Zoo.cat(java.lang.Object) on Test4.java:66
+  -> Test04$Zoo.rat(java.lang.Object) on Test4.java:67
+  <- Test04$Zoo.rat(java.lang.Object) on Test4.java:67
+  -> Test04$Zoo.lion(java.lang.Object) on Test4.java:64
+  -> Test04$Zoo.dog(java.lang.Object) on Test4.java:69
+  -> Test04$Zoo.bird(java.lang.Object) on Test4.java:70
+  -> Test04$Zoo.lion(java.lang.Object) on Test4.java:64
+  -> Test04$Zoo.cat(java.lang.Object) on Test4.java:66
+  -> Test04$Zoo.rat(java.lang.Object) on Test4.java:67
+  <- Test04$Zoo.rat(java.lang.Object) on Test4.java:67
+  -> Test04$Zoo.lion(java.lang.Object) on Test4.java:64
+  -> Test04$Zoo.dog(java.lang.Object) on Test4.java:69
+  -> Test04$Zoo.bird(java.lang.Object) on Test4.java:70
+  -> Test04$Animal.getAnimal(java.lang.Object) on Test4.java:76
+  -> ist.meic.pa.Trace.print(java.lang.Object) on Test4.java:78

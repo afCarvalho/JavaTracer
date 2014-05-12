@@ -5,8 +5,7 @@ import javassist.Loader;
 
 public class TraceVMExtended extends TraceVM {
 
-	// private static final String TRANSLATOREXTENDED =
-	// "ist.meic.pa.TraceTranslatorExtended";
+	private static final String TRANSLATOREXTENDED = "ist.meic.pa.TraceTranslatorExtended";
 
 	public TraceVMExtended() {
 		// Nothing to do here
@@ -20,8 +19,8 @@ public class TraceVMExtended extends TraceVM {
 			classLoader.addTranslator(ClassPool.getDefault(),
 					new TraceTranslatorExtended());
 			delegateClasses(classLoader);
+			classLoader.delegateLoadingOf(TRANSLATOREXTENDED);
 			runClassLoader(classLoader, args);
-			// classLoader.delegateLoadingOf(TRANSLATOREXTENDED);
 		}
 	}
 }

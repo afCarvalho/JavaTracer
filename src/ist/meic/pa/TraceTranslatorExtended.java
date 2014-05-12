@@ -1,5 +1,8 @@
 package ist.meic.pa;
 
+import java.util.LinkedList;
+import java.util.Map.Entry;
+
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
@@ -9,6 +12,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 import javassist.expr.Handler;
 import javassist.expr.MethodCall;
+import javassist.expr.NewArray;
 import javassist.expr.NewExpr;
 
 /**
@@ -41,8 +45,8 @@ public class TraceTranslatorExtended extends TraceTranslator {
 				}
 
 				@Override
-				public void edit(Handler handler) {
-					traceHandlers(handler);
+				public void edit(NewArray arr) {
+					traceArray(arr);
 				}
 
 				@Override
@@ -53,6 +57,11 @@ public class TraceTranslatorExtended extends TraceTranslator {
 				@Override
 				public void edit(Cast cast) {
 					traceCasts(cast);
+				}
+
+				@Override
+				public void edit(Handler handler) {
+					traceHandlers(handler);
 				}
 
 			});
@@ -69,7 +78,7 @@ public class TraceTranslatorExtended extends TraceTranslator {
 		try {
 			final String info = "\"" + h.where().getLongName() + "\",\""
 					+ h.getFileName() + "\"," + h.getLineNumber();
-			h.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
+			h.insertBefore("{ist.meic.pa.TraceTranslatorExtended.traceObj("
 					+ info + ",$1);}");
 		} catch (CannotCompileException e) {
 			// TODO Auto-generated catch block
@@ -112,7 +121,7 @@ public class TraceTranslatorExtended extends TraceTranslator {
 		try {
 			final String info = "\"" + c.where().getLongName() + "\",\""
 					+ c.getFileName() + "\"," + c.getLineNumber();
-			c.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceMethod("
+			c.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
 					+ info + ",$_);}");
 		} catch (CannotCompileException e) {
 			// TODO Auto-generated catch block
@@ -122,7 +131,7 @@ public class TraceTranslatorExtended extends TraceTranslator {
 
 	public static void traceObj(String methodName, String fileName, int line,
 			Object obj) {
-		// Trace.getTrace().addInfo(new TraceInfo(methodName, fileName, line,
-		// obj);
+		TraceInfo info = new TraceInfo(methodName, fileName, line);
+		Trace.addTraceInfo(info, obj);
 	}
 }

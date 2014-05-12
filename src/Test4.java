@@ -59,7 +59,7 @@ class Test04 {
 		Zoo zooLx = new ZooLx();
 
 		// int c = 2147479999;
-		int c = 500;
+		int c = 5;
 		while (c > 0) {
 			Zoo.lion(o);
 			if (c % 2 == 0) {
@@ -70,11 +70,6 @@ class Test04 {
 				zooLx.bird(o);
 
 			}
-
-			if (new Random().nextInt(100) == 0) {
-				break;
-			}
-
 			c--;
 		}
 
