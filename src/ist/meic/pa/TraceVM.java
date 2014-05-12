@@ -49,5 +49,4 @@ public class TraceVM {
 		System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 		classLoader.run(args[0], restArgs);
 	}
-
 }

@@ -19,6 +19,7 @@ import javassist.expr.NewExpr;
 public class TraceTranslator implements Translator {
 
 	public TraceTranslator() {
+		//Nothing to do here
 	}
 
 	public void start(ClassPool pool) throws NotFoundException,

@@ -1,8 +1,5 @@
 package ist.meic.pa;
 
-import java.util.LinkedList;
-import java.util.Map.Entry;
-
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
@@ -16,16 +13,23 @@ import javassist.expr.NewArray;
 import javassist.expr.NewExpr;
 
 /**
- * 
- * This class represents the translator of handlers, fields and casts
- * 
+ * This class represents the translator of handlers, fields and casts.
  */
 public class TraceTranslatorExtended extends TraceTranslator {
 
+	/**
+	 * Instantiates a new trace translator extended.
+	 */
 	public TraceTranslatorExtended() {
-		// TODO Auto-generated constructor stub
+		// Nothing to do here
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ist.meic.pa.TraceTranslator#traceMethods(javassist.CtClass,
+	 * java.lang.String)
+	 */
 	@Override
 	void traceMethods(final CtClass ctClass, final String className)
 			throws NotFoundException, CannotCompileException,
@@ -63,39 +67,37 @@ public class TraceTranslatorExtended extends TraceTranslator {
 				public void edit(Handler handler) {
 					traceHandlers(handler);
 				}
-
 			});
 		}
 	}
 
 	/**
-	 * Traces exception handlers
+	 * Traces exception handlers.
 	 * 
 	 * @param h
 	 *            - handler
 	 */
 	protected void traceHandlers(Handler h) {
 		try {
-			final String info = "\"" + h.where().getLongName() + "\",\""
-					+ h.getFileName() + "\"," + h.getLineNumber();
+			final String info = getInfoArgs(h.where().getLongName(),
+					h.getFileName(), h.getLineNumber());
 			h.insertBefore("{ist.meic.pa.TraceTranslatorExtended.traceObj("
 					+ info + ",$1);}");
 		} catch (CannotCompileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Traces fields
+	 * Traces fields.
 	 * 
 	 * @param f
 	 *            - field
 	 */
 	protected void traceFields(FieldAccess f) {
 		try {
-			final String info = "\"" + f.where().getLongName() + "\",\""
-					+ f.getFileName() + "\"," + f.getLineNumber();
+			final String info = getInfoArgs(f.where().getLongName(),
+					f.getFileName(), f.getLineNumber());
 			if (f.isReader()) {
 				f.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
 						+ info + ",($w)$_);}");
@@ -112,23 +114,34 @@ public class TraceTranslatorExtended extends TraceTranslator {
 	}
 
 	/**
-	 * Traces casts
+	 * Traces casts.
 	 * 
 	 * @param c
 	 *            - cast
 	 */
 	protected void traceCasts(Cast c) {
 		try {
-			final String info = "\"" + c.where().getLongName() + "\",\""
-					+ c.getFileName() + "\"," + c.getLineNumber();
+			final String info = getInfoArgs(c.where().getLongName(),
+					c.getFileName(), c.getLineNumber());
 			c.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
 					+ info + ",$_);}");
 		} catch (CannotCompileException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Method to be injected.
+	 * 
+	 * @param methodName
+	 *            - method name
+	 * @param fileName
+	 *            - file name
+	 * @param line
+	 *            - line
+	 * @param obj
+	 *            - obj
+	 */
 	public static void traceObj(String methodName, String fileName, int line,
 			Object obj) {
 		TraceInfo info = new TraceInfo(methodName, fileName, line);
