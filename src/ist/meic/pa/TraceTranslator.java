@@ -19,7 +19,7 @@ import javassist.expr.NewExpr;
 public class TraceTranslator implements Translator {
 
 	public TraceTranslator() {
-		//Nothing to do here
+		// Nothing to do here
 	}
 
 	public void start(ClassPool pool) throws NotFoundException,
@@ -127,8 +127,10 @@ public class TraceTranslator implements Translator {
 	 * @return - string with instructions to be injected
 	 */
 	public String afterInjection(String name, String file, int line) {
-		return "{$_ = $proceed($$); ist.meic.pa.TraceTranslator.traceMethod("
-				+ getInfoArgs(name, file, line) + ",$args,($w) $_);}";
+		return "{ist.meic.pa.TraceTranslator.traceMethodArgs("
+				+ getInfoArgs(name, file, line)
+				+ ",$args);$_ = $proceed($$);ist.meic.pa.TraceTranslator.traceMethodRes("
+				+ getInfoArgs(name, file, line) + ",($w) $_);}";
 	}
 
 	/**
@@ -143,7 +145,7 @@ public class TraceTranslator implements Translator {
 	 * @return - string with instructions to be injected
 	 */
 	public String beforeInjection(String name, String file, int line) {
-		return "{ist.meic.pa.TraceTranslator.traceMethod("
+		return "{ist.meic.pa.TraceTranslator.traceMethodArgs("
 				+ getInfoArgs(name, file, line)
 				+ ",$args); $_ = $proceed($$);}";
 	}
@@ -164,38 +166,7 @@ public class TraceTranslator implements Translator {
 	}
 
 	/**
-	 * Method to be injected when result is relevant
-	 * 
-	 * @param name
-	 *            - method name
-	 * @param file
-	 *            - file name
-	 * @param line
-	 *            - line number
-	 * @param args
-	 *            - call arguments
-	 * @param result
-	 *            - call result
-	 */
-	public static void traceMethod(String methodName, String fileName,
-			int line, Object[] args, Object result) {
-
-		TraceInfo infos[] = new TraceInfo[args.length];
-
-		for (int i = 0; i < infos.length; i++) {
-			infos[i] = new TraceInfo(methodName, fileName, line);
-
-		}
-
-		traceMethod(methodName, fileName, line, args);
-
-		TraceInfo info = new TraceInfo(methodName, fileName, line);
-		info.setResult(true);
-		Trace.addTraceInfo(info, result);
-	}
-
-	/**
-	 * Method to be injected when only args are relevant
+	 * Method to be injected to trace arguments
 	 * 
 	 * @param name
 	 *            - method name
@@ -206,7 +177,7 @@ public class TraceTranslator implements Translator {
 	 * @param args
 	 *            - call arguments
 	 */
-	public static void traceMethod(String methodName, String fileName,
+	public static void traceMethodArgs(String methodName, String fileName,
 			int line, Object[] args) {
 		TraceInfo info;
 
@@ -215,5 +186,26 @@ public class TraceTranslator implements Translator {
 			info.setArg(true);
 			Trace.addTraceInfo(info, arg);
 		}
+	}
+
+	/**
+	 * Method to be injected to trace the return
+	 * 
+	 * @param name
+	 *            - method name
+	 * @param file
+	 *            - file name
+	 * @param line
+	 *            - line number
+	 * @param args
+	 *            - call arguments
+	 */
+	public static void traceMethodRes(String methodName, String fileName,
+			int line, Object res) {
+		TraceInfo info;
+
+		info = new TraceInfo(methodName, fileName, line);
+		info.setResult(true);
+		Trace.addTraceInfo(info, res);
 	}
 }

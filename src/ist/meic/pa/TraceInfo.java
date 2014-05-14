@@ -69,8 +69,8 @@ public class TraceInfo {
 			if (isResult) {
 				System.err.println("  <- " + traceMessage);
 			}
-			
-			if(!isArgument  && !isResult){
+
+			if (!isArgument && !isResult) {
 				System.err.println("  * " + traceMessage);
 			}
 		}

@@ -1,8 +1,8 @@
 MyObj
 Tracing for MyObj
   <- java.lang.String(java.lang.String) on Test7.java:12
-  * Test7Exception(java.lang.Object) on Test7Exception.java:7
   -> Test7Exception(java.lang.Object) on Test7.java:15
+  * Test7Exception(java.lang.Object) on Test7Exception.java:7
   * Test7Exception.getMessage() on Test7Exception.java:12
   <- java.lang.Object.toString() on Test7Exception.java:12
   <- Test7Exception.getMessage() on Test7.java:17
