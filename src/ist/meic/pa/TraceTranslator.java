@@ -182,8 +182,7 @@ public class TraceTranslator implements Translator {
 		TraceInfo info;
 
 		for (Object arg : args) {
-			info = new TraceInfo(methodName, fileName, line);
-			info.setArg(true);
+			info = new TraceInfo(methodName, fileName, line, Role.ARGUMENT);
 			Trace.addTraceInfo(info, arg);
 		}
 	}
@@ -204,8 +203,7 @@ public class TraceTranslator implements Translator {
 			int line, Object res) {
 		TraceInfo info;
 
-		info = new TraceInfo(methodName, fileName, line);
-		info.setResult(true);
+		info = new TraceInfo(methodName, fileName, line, Role.RESULT);
 		Trace.addTraceInfo(info, res);
 	}
 }

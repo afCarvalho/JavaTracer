@@ -2,45 +2,24 @@ package ist.meic.pa;
 
 /**
  * 
- * This class represents the trace info correspoding to the occurence of an
+ * This class represents the trace info corresponding to the occurrence of an
  * object in a specific file, method and line
  * 
  */
 public class TraceInfo {
+
 	private String traceMessage;
-	private boolean isArgument;
-	private boolean isResult;
+	private Role role;
 	private int counter;
 
-	public TraceInfo(String methodName, String fileName, int line) {
+	public TraceInfo(String methodName, String fileName, int line, Role role) {
 		setTraceMessage(methodName, fileName, line);
 		counter = 1;
+		this.role = role;
 	}
 
-	/**
-	 * Tells if object has the role of argument
-	 * 
-	 * @return - predicate
-	 */
-	public boolean isArg() {
-		return isArgument;
-	}
-
-	public void setArg(boolean isArgument) {
-		this.isArgument = isArgument;
-	}
-
-	/**
-	 * Tells if object has the role of result
-	 * 
-	 * @return - predicate
-	 */
-	public boolean isResult() {
-		return isResult;
-	}
-
-	public void setResult(boolean isResult) {
-		this.isResult = isResult;
+	private boolean hasRole(Role role) {
+		return this.role.compareTo(role) == 0;
 	}
 
 	/**
@@ -48,7 +27,7 @@ public class TraceInfo {
 	 * 
 	 * @return - string with message
 	 */
-	public String getTraceMessage() {
+	private String getTraceMessage() {
 		return traceMessage;
 	}
 
@@ -60,19 +39,9 @@ public class TraceInfo {
 	 * Prints the complete trace message
 	 */
 	public void printTraceMessage() {
-		// System.err.println(traceMessage + " " + isArgument + " " + isResult);
+		// System.err.println(traceMessage);
 		for (int i = 0; i < counter; i++) {
-			if (isArgument) {
-				System.err.println("  -> " + traceMessage);
-			}
-
-			if (isResult) {
-				System.err.println("  <- " + traceMessage);
-			}
-
-			if (!isArgument && !isResult) {
-				System.err.println("  * " + traceMessage);
-			}
+			role.printMessage(traceMessage);
 		}
 	}
 
@@ -91,48 +60,11 @@ public class TraceInfo {
 	 *            - trace info being compared with this one
 	 * @return - predicate
 	 */
-	public boolean hasSameMessage(TraceInfo info) {
+	private boolean hasSameMessage(TraceInfo info) {
 		return info.getTraceMessage().equals(traceMessage);
 	}
 
-	/**
-	 * Tells if two traceInfos have the same role
-	 * 
-	 * @param info
-	 *            - trace info being compared with this one
-	 * @return - predicate
-	 */
-	public boolean hasSameRole(TraceInfo info) {
-		return info.isResult == isResult && info.isArgument == isArgument;
-	}
-
-	/**
-	 * Tells if two traceInfos have opposite role
-	 * 
-	 * @param info
-	 *            - trace info being compared with this one
-	 * @return - predicate
-	 */
-	public boolean hasOppositeRole(TraceInfo info) {
-		return info.isArgOnly() && isResultOnly() || info.isResultOnly()
-				&& isArgOnly();
-	}
-
-	/**
-	 * Tells if this traceInfo has argument role only
-	 * 
-	 * @return - predicate
-	 */
-	private boolean isArgOnly() {
-		return isArgument && !isResult;
-	}
-
-	/**
-	 * Tells if this traceInfo has result role only
-	 * 
-	 * @return - predicate
-	 */
-	private boolean isResultOnly() {
-		return !isArgument && isResult;
+	public boolean isSameTrace(TraceInfo info) {
+		return this.hasRole(info.role) && this.hasSameMessage(info);
 	}
 }

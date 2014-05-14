@@ -82,7 +82,7 @@ public class TraceTranslatorExtended extends TraceTranslator {
 			final String info = getInfoArgs(h.where().getLongName(),
 					h.getFileName(), h.getLineNumber());
 			h.insertBefore("{ist.meic.pa.TraceTranslatorExtended.traceObj("
-					+ info + ",$1);}");
+					+ info + ", ist.meic.pa.Role.HANDLER, $1);}");
 		} catch (CannotCompileException e) {
 			e.printStackTrace();
 		}
@@ -100,12 +100,13 @@ public class TraceTranslatorExtended extends TraceTranslator {
 					f.getFileName(), f.getLineNumber());
 			if (f.isReader()) {
 				f.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
-						+ info + ",($w)$_);}");
+						+ info + ", ist.meic.pa.Role.READ_FIELD, ($w)$_);}");
 			}
 
 			if (f.isWriter()) {
 				f.replace("{ist.meic.pa.TraceTranslatorExtended.traceObj("
-						+ info + ",($w)$1); $_ = $proceed($$);}");
+						+ info
+						+ ", ist.meic.pa.Role.WRITE_FIELD, ($w)$1); $_ = $proceed($$);}");
 			}
 
 		} catch (CannotCompileException e) {
@@ -124,7 +125,7 @@ public class TraceTranslatorExtended extends TraceTranslator {
 			final String info = getInfoArgs(c.where().getLongName(),
 					c.getFileName(), c.getLineNumber());
 			c.replace("{$_ = $proceed($$); ist.meic.pa.TraceTranslatorExtended.traceObj("
-					+ info + ",$_);}");
+					+ info + ", ist.meic.pa.Role.CAST, $_);}");
 		} catch (CannotCompileException e) {
 			e.printStackTrace();
 		}
@@ -143,8 +144,8 @@ public class TraceTranslatorExtended extends TraceTranslator {
 	 *            - obj
 	 */
 	public static void traceObj(String methodName, String fileName, int line,
-			Object obj) {
-		TraceInfo info = new TraceInfo(methodName, fileName, line);
+			Role role, Object obj) {
+		TraceInfo info = new TraceInfo(methodName, fileName, line, role);
 		Trace.addTraceInfo(info, obj);
 	}
 }

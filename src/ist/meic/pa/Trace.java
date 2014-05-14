@@ -35,8 +35,7 @@ public class Trace {
 			list = new LinkedList<TraceInfo>();
 			list.add(traceInfo);
 			objectMap.put(object, list);
-		} else if (traceInfo.hasSameMessage(list.getLast())
-				&& traceInfo.hasSameRole(list.getLast())) {
+		} else if (traceInfo.isSameTrace(list.getLast())) {
 			list.getLast().incrementCounter();
 		} else {
 			list.addLast(traceInfo);

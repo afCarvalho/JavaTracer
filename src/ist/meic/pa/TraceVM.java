@@ -7,6 +7,7 @@ public class TraceVM {
 
 	private static final String TRACE = "ist.meic.pa.Trace";
 	private static final String TRANSLATOR = "ist.meic.pa.TraceTranslator";
+	private static final String ROLE = "ist.meic.pa.Role";
 
 	public TraceVM() {
 		// Nothing to do here
@@ -32,6 +33,7 @@ public class TraceVM {
 	public static void delegateClasses(Loader loader) {
 		loader.delegateLoadingOf(TRACE);
 		loader.delegateLoadingOf(TRANSLATOR);
+		loader.delegateLoadingOf(ROLE);
 	}
 
 	/**

@@ -1,18 +1,18 @@
 Tracing for Teste6
   <- java.lang.String(java.lang.String) on Test6.java:5
-  * Test06() on Test6.java:5
-  * Test06() on Test6.java:7
-  * Test06() on Test6.java:7
-  * Test06() on Test6.java:7
-  * Test06.test() on Test6.java:10
+  * Write Field: Test06() on Test6.java:5
+  * Read Field: Test06() on Test6.java:7
+  * Cast: Test06() on Test6.java:7
+  * Write Field: Test06() on Test6.java:7
+  * Read Field: Test06.test() on Test6.java:10
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test6.java:10
 Tracing for Teste6
   <- java.lang.String(java.lang.String) on Test6.java:5
-  * Test06() on Test6.java:5
-  * Test06() on Test6.java:7
-  * Test06() on Test6.java:7
-  * Test06() on Test6.java:7
-  * Test06.test() on Test6.java:10
+  * Write Field: Test06() on Test6.java:5
+  * Read Field: Test06() on Test6.java:7
+  * Cast: Test06() on Test6.java:7
+  * Write Field: Test06() on Test6.java:7
+  * Read Field: Test06.test() on Test6.java:10
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test6.java:10
-  * Test06.test() on Test6.java:11
+  * Read Field: Test06.test() on Test6.java:11
   -> ist.meic.pa.Trace.print(java.lang.Object) on Test6.java:11

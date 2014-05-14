@@ -2,8 +2,8 @@ MyObj
 Tracing for MyObj
   <- java.lang.String(java.lang.String) on Test7.java:12
   -> Test7Exception(java.lang.Object) on Test7.java:15
-  * Test7Exception(java.lang.Object) on Test7Exception.java:7
-  * Test7Exception.getMessage() on Test7Exception.java:12
+  * Write Field: Test7Exception(java.lang.Object) on Test7Exception.java:7
+  * Read Field: Test7Exception.getMessage() on Test7Exception.java:12
   <- java.lang.Object.toString() on Test7Exception.java:12
   <- Test7Exception.getMessage() on Test7.java:17
   -> java.io.PrintStream.println(java.lang.String) on Test7.java:17
