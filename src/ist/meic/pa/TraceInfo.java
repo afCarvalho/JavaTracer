@@ -8,8 +8,17 @@ package ist.meic.pa;
  */
 public class TraceInfo {
 
+	/**
+	 * Base message of line,method and file related with this trace info
+	 */
 	private String traceMessage;
+	/**
+	 * The role of this trace info
+	 */
 	private Role role;
+	/**
+	 * Number of consecutive times this same trace info appears
+	 */
 	private int counter;
 
 	public TraceInfo(String methodName, String fileName, int line, Role role) {
@@ -18,6 +27,12 @@ public class TraceInfo {
 		this.role = role;
 	}
 
+	/**
+	 * Tells if two roles are identical
+	 * 
+	 * @param role
+	 * @return
+	 */
 	private boolean hasRole(Role role) {
 		return this.role.compareTo(role) == 0;
 	}
@@ -39,7 +54,6 @@ public class TraceInfo {
 	 * Prints the complete trace message
 	 */
 	public void printTraceMessage() {
-		// System.err.println(traceMessage);
 		for (int i = 0; i < counter; i++) {
 			role.printMessage(traceMessage);
 		}
@@ -64,6 +78,13 @@ public class TraceInfo {
 		return info.getTraceMessage().equals(traceMessage);
 	}
 
+	/**
+	 * Tells if two trace infos refer to the same line, method, file and role
+	 * 
+	 * @param info
+	 *            - info to be compared with
+	 * @return - predicate
+	 */
 	public boolean isSameTrace(TraceInfo info) {
 		return this.hasRole(info.role) && this.hasSameMessage(info);
 	}

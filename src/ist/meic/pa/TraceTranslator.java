@@ -30,15 +30,24 @@ public class TraceTranslator implements Translator {
 			throws NotFoundException, CannotCompileException {
 		CtClass ctClass = pool.get(className);
 		try {
-			traceMethods(ctClass, className);
+			traceMethods(ctClass);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	void traceMethods(final CtClass ctClass, final String className)
-			throws NotFoundException, CannotCompileException,
-			ClassNotFoundException {
+	/**
+	 * Traces method and constructor calls
+	 * 
+	 * @param ctClass
+	 *            - class being loaded
+	 * @throws NotFoundException
+	 * @throws CannotCompileException
+	 * @throws ClassNotFoundException
+	 */
+
+	void traceMethods(final CtClass ctClass) throws NotFoundException,
+			CannotCompileException, ClassNotFoundException {
 
 		for (final CtBehavior ctBehaviour : ctClass.getDeclaredBehaviors()) {
 			ctBehaviour.instrument(new ExprEditor() {
@@ -51,11 +60,6 @@ public class TraceTranslator implements Translator {
 				@Override
 				public void edit(NewExpr expr) {
 					traceConstructors(expr);
-				}
-
-				@Override
-				public void edit(NewArray arr) {
-					traceArray(arr);
 				}
 			});
 		}
@@ -95,21 +99,6 @@ public class TraceTranslator implements Translator {
 					expr.getFileName(), expr.getLineNumber()));
 		} catch (NotFoundException e) {
 			e.printStackTrace();
-		} catch (CannotCompileException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Traces array calls
-	 * 
-	 * @param arr
-	 *            - array expression call
-	 */
-	protected void traceArray(NewArray arr) {
-		try {
-			arr.replace(afterInjection(arr.where().getLongName(),
-					arr.getFileName(), arr.getLineNumber()));
 		} catch (CannotCompileException e) {
 			e.printStackTrace();
 		}
@@ -196,8 +185,8 @@ public class TraceTranslator implements Translator {
 	 *            - file name
 	 * @param line
 	 *            - line number
-	 * @param args
-	 *            - call arguments
+	 * @param res
+	 *            - result object
 	 */
 	public static void traceMethodRes(String methodName, String fileName,
 			int line, Object res) {

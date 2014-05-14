@@ -24,16 +24,19 @@ public class TraceTranslatorExtended extends TraceTranslator {
 		// Nothing to do here
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Traces method, constructor, array, field, cast and exception handler
+	 * calls
 	 * 
-	 * @see ist.meic.pa.TraceTranslator#traceMethods(javassist.CtClass,
-	 * java.lang.String)
+	 * @param ctClass
+	 *            - class being loaded
+	 * @throws NotFoundException
+	 * @throws CannotCompileException
+	 * @throws ClassNotFoundException
 	 */
 	@Override
-	void traceMethods(final CtClass ctClass, final String className)
-			throws NotFoundException, CannotCompileException,
-			ClassNotFoundException {
+	void traceMethods(final CtClass ctClass) throws NotFoundException,
+			CannotCompileException, ClassNotFoundException {
 
 		for (final CtBehavior ctBehaviour : ctClass.getDeclaredBehaviors()) {
 			ctBehaviour.instrument(new ExprEditor() {
@@ -147,5 +150,20 @@ public class TraceTranslatorExtended extends TraceTranslator {
 			Role role, Object obj) {
 		TraceInfo info = new TraceInfo(methodName, fileName, line, role);
 		Trace.addTraceInfo(info, obj);
+	}
+
+	/**
+	 * Traces array calls
+	 * 
+	 * @param arr
+	 *            - array expression call
+	 */
+	protected void traceArray(NewArray arr) {
+		try {
+			arr.replace(afterInjection(arr.where().getLongName(),
+					arr.getFileName(), arr.getLineNumber()));
+		} catch (CannotCompileException e) {
+			e.printStackTrace();
+		}
 	}
 }
