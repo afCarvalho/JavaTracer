@@ -57,7 +57,7 @@ public class Trace {
 				key.printTraceMessage();
 			}
 		} else {
-			System.err.println("Tracing for object is nonexistent!");
+			System.err.println("Tracing for " + object + " is nonexistent!");
 		}
 	}
 
